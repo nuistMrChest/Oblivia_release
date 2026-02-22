@@ -43,7 +43,9 @@ add_executable(oblivia
 # ===== Static build configuration =====
 
 if (MSVC)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    set_property(TARGET oblivia PROPERTY
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
 else()
     target_link_options(oblivia PRIVATE
         -static
