@@ -100,6 +100,19 @@ namespace Oblivia{
         }
     }
 
+    Array&Array::operator=(const Array&a){
+        this->type=a.type;
+        this->array.resize(a.array.size());
+        for(int i=0;i<a.array.size();i++){
+            switch(a.array[i]->getType()){
+                case Type::Number:this->array[i]=std::make_shared<ArrayElement>(*this,i,a.array[i]->as.Num());break;
+                case Type::Array:this->array[i]=std::make_shared<ArrayElement>(*this,i,std::make_shared<Array>(a.array[i]->as.Arr()));break;
+                case Type::Object:this->array[i]=std::make_shared<ArrayElement>(*this,i,std::make_shared<Object>(a.array[i]->as.Obj()));break;
+            }
+        }
+        return *this;
+    }
+
     int Array::getLength(){
         return array.size();
     }

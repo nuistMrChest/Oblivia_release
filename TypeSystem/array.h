@@ -43,6 +43,7 @@ namespace Oblivia{
         Array();
         Array(int length);
         Array(const Array&a);
+        Array&operator=(const Array&a);
         int getLength();
         ArrayElement&visitValue(size_t index);
         Number operator==(const Array&a)const;

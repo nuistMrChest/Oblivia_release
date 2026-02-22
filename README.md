@@ -20,8 +20,9 @@ Working components:
 
 -   `number`
 -   `string`
+-   `array`
 
-> Array and object syntax exist but are not implemented yet.
+> object syntax exist but are not implemented yet.
 
 ------------------------------------------------------------------------
 

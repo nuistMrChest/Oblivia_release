@@ -46,6 +46,27 @@ namespace Oblivia{
         return *std::get<std::shared_ptr<String>>(v);
     }
 
+    ValueType::ValueType(){
+        this->v=Number(0);
+    }
+
+    ValueType::ValueType(const ValueType&a){
+        if(std::holds_alternative<Number>(a.v))this->v=a.Num();
+        else if(std::holds_alternative<std::shared_ptr<Array>>(a.v))this->v=std::make_shared<Array>(a.Arr());
+        else if(std::holds_alternative<std::shared_ptr<Object>>(a.v))this->v=std::make_shared<Object>(a.Obj());
+        else if(std::holds_alternative<std::shared_ptr<String>>(a.v))this->v=std::make_shared<String>(a.Str());
+        else this->v=Number(0);
+    }
+
+    ValueType&ValueType::operator=(const ValueType&a){
+        if(std::holds_alternative<Number>(a.v))this->v=a.Num();
+        else if(std::holds_alternative<std::shared_ptr<Array>>(a.v))this->v=std::make_shared<Array>(a.Arr());
+        else if(std::holds_alternative<std::shared_ptr<Object>>(a.v))this->v=std::make_shared<Object>(a.Obj());
+        else if(std::holds_alternative<std::shared_ptr<String>>(a.v))this->v=std::make_shared<String>(a.Str());
+        else this->v=Number(0);
+        return *this;
+    }
+
     bool VarKey::operator==(const VarKey&a)const{
         return this->name==a.name&&this->level==a.level;
     }

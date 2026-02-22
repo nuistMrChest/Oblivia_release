@@ -1,4 +1,4 @@
-# Oblivia Language Specification (Current Version)
+# Oblivia Language Specification (v0.2.0)
 
 This document describes the currently implemented features of the
 Oblivia language.
@@ -24,7 +24,7 @@ Recommended file extension:
 
 -   number
 -   string
--   array (internal only, not usable yet)
+-   array
 -   object (internal only, not usable yet)
 
 ## 2.2 Currently Usable Types
@@ -33,6 +33,7 @@ Users can currently use:
 
 -   number
 -   string
+-   array
 
 Array and object literal syntax are not implemented yet.
 
@@ -289,4 +290,62 @@ Users may input a single statement or REPL commands.
 
 ------------------------------------------------------------------------
 
-End of current specification.
+# 9. Arrays
+
+## 9.1 Array Declaration
+
+Arrays can now be declared using the syntax `let name#expr;`, where `expr` must evaluate to a `number`. The result of this expression will be the length of the array. Additionally, the following shorthand is supported: `let name[expr];`. Arrays are initialized with all elements set to `0`.
+
+Example:
+
+    let arr#5;      // Array of length 5
+    let arr[3];     // Shorthand for array of length 3
+
+## 9.2 Array Elements
+
+Arrays can store any type of value, including `number`, `string`, or other arrays. The elements of the array can be modified after initialization.
+
+Example:
+
+    let arr[5];
+    arr[0] = 10;
+    arr[1] = "hello";
+    arr[2] = arr;   // Arrays can store themselves (self-references are allowed)
+
+## 9.3 Array Output
+
+The `print` statement can output arrays. The elements of the array will be printed in a space-separated format enclosed in `{}`.
+
+Example:
+
+    let arr[5];
+    print arr;      // Output: {0 0 0 0 0}
+
+## 9.4 Array Comparisons and Copying
+
+Arrays support deep comparison using `==` and `!=`, which compares both the length and the values of each element. Assigning one array to another will perform a deep copy, duplicating each element.
+
+Example:
+
+    let arr1[3];
+    let arr2[3];
+    arr1[0] = 1;
+    arr1[1] = 2;
+    arr1[2] = 3;
+    arr2 = arr1;    // Deep copy of arr1
+
+## 9.5 Self-referencing Arrays
+
+Arrays can reference themselves, creating a loop or self-reference, which will result in a runtime error when output is attempted due to infinite recursion.
+
+Example:
+
+    let a[9];
+    a[0] = a;       // Self-referencing array
+    print a;        // Will cause a crash (infinite recursion)
+
+------------------------------------------------------------------------
+
+# 10. Identifier Rules
+
+Identifiers can only contain uppercase letters, lowercase letters, and underscores. Numbers are not allowed in identifiers.

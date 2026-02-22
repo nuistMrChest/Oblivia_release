@@ -76,6 +76,7 @@ namespace Oblivia{
         public:
         std::string name;
         Expression val;
+        Type val_ty;
         Let();
         Let(int l,const Tokens&t);
         Situation execute(ExecuteResult&result);

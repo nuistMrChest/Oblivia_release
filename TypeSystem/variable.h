@@ -16,7 +16,12 @@ namespace Oblivia{
     class String;
 
     struct ValueType{
-        std::variant<Number,std::shared_ptr<Array>,std::shared_ptr<Object>,std::shared_ptr<String>>v;
+        std::variant<
+            Number,
+            std::shared_ptr<Array>,
+            std::shared_ptr<Object>,
+            std::shared_ptr<String>
+        >v;
         Number&Num();
         Array&Arr();
         Object&Obj();
@@ -26,6 +31,10 @@ namespace Oblivia{
         const Array&Arr()const;
         const Object&Obj()const;
         const String&Str()const;
+
+        ValueType();
+        ValueType(const ValueType&a);
+        ValueType&operator=(const ValueType&a);
     };
 
     struct VarKey{
