@@ -1,4 +1,4 @@
-# Oblivia Language Specification (v0.2.0)
+# Oblivia Language Specification (v0.2.2)
 
 This document describes the currently implemented features of the
 Oblivia language.
@@ -333,16 +333,6 @@ Example:
     arr1[1] = 2;
     arr1[2] = 3;
     arr2 = arr1;    // Deep copy of arr1
-
-## 9.5 Self-referencing Arrays
-
-Arrays can reference themselves, creating a loop or self-reference, which will result in a runtime error when output is attempted due to infinite recursion.
-
-Example:
-
-    let a[9];
-    a[0] = a;       // Self-referencing array
-    print a;        // Will cause a crash (infinite recursion)
 
 ------------------------------------------------------------------------
 
