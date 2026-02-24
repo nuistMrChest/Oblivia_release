@@ -1,4 +1,4 @@
-# Oblivia Language Specification (v0.2.2)
+# Oblivia Language Specification (v0.2.3)
 
 This document describes the currently implemented features of the
 Oblivia language.
@@ -298,8 +298,8 @@ Arrays can now be declared using the syntax `let name#expr;`, where `expr` must 
 
 Example:
 
-    let arr#5;      // Array of length 5
-    let arr[3];     // Shorthand for array of length 3
+    let arr#5; 
+    let arr[3]; 
 
 ## 9.2 Array Elements
 
@@ -310,7 +310,7 @@ Example:
     let arr[5];
     arr[0] = 10;
     arr[1] = "hello";
-    arr[2] = arr;   // Arrays can store themselves (self-references are allowed)
+    arr[2] = arr; 
 
 ## 9.3 Array Output
 
@@ -319,7 +319,7 @@ The `print` statement can output arrays. The elements of the array will be print
 Example:
 
     let arr[5];
-    print arr;      // Output: {0 0 0 0 0}
+    print arr; 
 
 ## 9.4 Array Comparisons and Copying
 
@@ -332,7 +332,7 @@ Example:
     arr1[0] = 1;
     arr1[1] = 2;
     arr1[2] = 3;
-    arr2 = arr1;    // Deep copy of arr1
+    arr2 = arr1; 
 
 ------------------------------------------------------------------------
 
