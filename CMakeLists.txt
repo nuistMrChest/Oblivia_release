@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(oblivia
+set(OBLIVIA_SOURCES
     main.cpp
     ./implement/relp.cpp
     ./implement/interpreter.cpp
@@ -41,6 +41,13 @@ add_executable(oblivia
     ./Statement/implement/while.cpp
     ./Statement/implement/execute.cpp
 )
+
+# Windows only: add icon resource
+if (WIN32)
+    list(APPEND OBLIVIA_SOURCES resource.rc)
+endif()
+
+add_executable(oblivia ${OBLIVIA_SOURCES})
 
 # Windows: always build with static MSVC runtime
 if (MSVC)
