@@ -21,11 +21,6 @@ namespace Oblivia{
         "if",
         "else",
         "while",
-        "endl",
-        "string",
-        "ifn",
-        "ofn",
-        "stdio",
         "break",
         "continue"
     };

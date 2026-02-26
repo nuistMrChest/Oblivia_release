@@ -31,7 +31,8 @@ namespace Oblivia{
         Block,
         Fn,
         Break,
-        Continue
+        Continue,
+        Execute
     };
 
     StatementType getStateType(const Tokens&a);
@@ -166,6 +167,16 @@ namespace Oblivia{
         public:
         Continue();
         Continue(int l,const Tokens&t);
+        Situation execute(ExecuteResult&result);
+        static bool isLegal(const Tokens&t);
+        Situation build();
+    };
+
+    class Execute:public Statement{
+        public:
+        std::string code;
+        Execute();
+        Execute(int l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();

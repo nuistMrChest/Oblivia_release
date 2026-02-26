@@ -17,6 +17,7 @@ namespace Oblivia{
             case StatementType::Fn:os<<"Fn";break;
             case StatementType::Break:os<<"Break";break;
             case StatementType::Continue:os<<"Continue";break;
+            case StatementType::Execute:os<<"Execute";break;
         }
         return os;
     }
@@ -37,6 +38,7 @@ namespace Oblivia{
         else if(a[0].str=="ifn"||a[0].str=="ofn")return StatementType::Fn;
         else if(a[0].str=="break")return StatementType::Break;
         else if(a[0].str=="continue")return StatementType::Continue;
+        else if(a[0].str=="execute")return StatementType::Execute;
         else return StatementType::Expr;
     }
 
@@ -63,6 +65,7 @@ namespace Oblivia{
             // case StatementType::Fn:r=std::make_unique<Fn>(l,t);break;
             case StatementType::Break:r=std::make_unique<Break>(l,t);break;
             case StatementType::Continue:r=std::make_unique<Continue>(l,t);break;
+            case StatementType::Execute:r=std::make_unique<Execute>(l,t);break;
             default:return Situation::Success;
         }
         return Situation::Success;
@@ -79,7 +82,8 @@ namespace Oblivia{
             Else::isLegal(t)||
             While::isLegal(t)||
             Break::isLegal(t)||
-            Continue::isLegal(t)
+            Continue::isLegal(t)||
+            Execute::isLegal(t)
             // Fn::isLegal(t)
         );
     }

@@ -26,7 +26,7 @@ namespace Oblivia{
 
     void RELP(){
         std::string input;
-        std::cout<<"Oblivia RELP v0.2.0"<<std::endl<<"By MrChest form NUIST"<<std::endl;
+        std::cout<<"Oblivia RELP v0.3.0"<<std::endl<<"By MrChest form NUIST"<<std::endl;
         while(1){
             std::cout<<">>";
             std::getline(std::cin,input);
@@ -60,8 +60,8 @@ namespace Oblivia{
                 std::cout<<sb<<std::endl;
             }
             ExecuteResult er;
-            stat->execute(er);
-            std::cout<<std::endl;
+            Situation se=stat->execute(er);
+            std::cout<<se<<std::endl;
         }
     }
 }

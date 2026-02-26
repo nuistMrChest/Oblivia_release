@@ -1,341 +1,350 @@
-# Oblivia Language Specification (v0.2.3)
+# Oblivia Programming Language
 
-This document describes the currently implemented features of the
-Oblivia language.
+## 1. Type System
 
-------------------------------------------------------------------------
+Currently, Oblivia provides four built-in types:
 
-# 1. Overview
+-   number\
+-   string\
+-   array\
+-   object (not available yet)
 
-Oblivia is a statement-oriented interpreted scripting language.
+### 1.1 Number
 
-A source file must contain exactly one statement. Complex programs must
-wrap multiple statements inside a block `{ ... }`.
+In this version, `number` is implemented as C `float`.
 
-Recommended file extension:
+Division is floating-point division.\
+Modulo uses floating-point `fmod` behavior.
 
-    .obl
+Examples:
 
-------------------------------------------------------------------------
+    3 / 2;
+    3 % 2;
 
-# 2. Type System
+Boolean rules:
 
-## 2.1 Implemented Internal Types
-
--   number
--   string
--   array
--   object (internal only, not usable yet)
-
-## 2.2 Currently Usable Types
-
-Users can currently use:
-
--   number
--   string
--   array
-
-Array and object literal syntax are not implemented yet.
-
-## 2.3 Number Type
-
-`number` is currently implemented as C `float`.
-
-This means:
-
--   `==` comparisons may be imprecise
--   Floating-point rounding errors may occur
-
-Future versions may replace this with a more advanced numeric type.
+-   `0` is false
+-   Any non-zero value is true
+-   All comparison and logical operators return `1` for true
 
 ------------------------------------------------------------------------
 
-# 3. Operators
+### 1.2 String
+
+There is no `char` type, only `string`.
+
+Properties:
+
+-   Strings are immutable.
+-   Accessing a single character returns a one-character string.
+-   Supported escape sequences:
+
+```{=html}
+<!-- -->
+```
+    \n \" \a \b \f \r \t \v \\
+
+`\'` is illegal.
+
+------------------------------------------------------------------------
+
+### 1.3 Array
+
+Arrays are fixed-length contiguous memory blocks.
+
+-   Length cannot change after creation.
+-   Different elements can store different types.
+-   Default value of each element is `0`.
+
+Example:
+
+    let a[5];
+    a[0] = 10;
+
+Internally:
+
+    a#(0)
+
+`#` is the array element access operator.
+
+------------------------------------------------------------------------
+
+### 1.4 Object
+
+Object type exists but is not implemented yet.
+
+------------------------------------------------------------------------
+
+## 2. Reference Types
+
+There are three reference types:
+
+-   variable\
+-   array element\
+-   object attribute
+
+Values must be stored in reference types, otherwise they are literals.
+
+------------------------------------------------------------------------
+
+### 2.1 Variable
+
+Variables are dynamically typed.
+
+Rules:
+
+-   Must have a name.
+-   Default value is `0`.
+-   Identifier characters: `a-z`, `A-Z`, `_`
+-   Digits are not allowed.
+-   Keywords are currently allowed but not recommended.
+
+Examples:
+
+    let a;
+    let b = 10;
+
+------------------------------------------------------------------------
+
+### 2.2 Array Element
+
+Array elements are references inside arrays.
+
+Example:
+
+    let a[3];
+    a[0] = 5;
+
+------------------------------------------------------------------------
+
+### 2.3 Object Attribute
+
+Not available yet.
+
+------------------------------------------------------------------------
+
+## 3. Expressions
 
 Supported operators:
 
-    +  -  *  /  %
-    =  ==  !=  >  <  >=  <=
-    += -= *= /= %=
-    && || !
-    #  ->
+    + - * / % = == != > < >= <= && || ! # -> += -= *= /= %=
 
-## 3.1 Element Dereference Operator (#)
+### 3.1 Operator Priority
 
-Used for string and array (array not usable yet).
+From highest to lowest:
 
-Example:
+    8  : # ->
+    7  : !
+    6  : * / %
+    5  : + -
+    4  : > < >= <=
+    3  : == !=
+    2  : &&
+    1  : ||
+    0  : = += -= *= /= %=
 
-    "hello"#1
+### 3.2 Associativity
 
-Result:
+Right associative:
 
-    "e"
+    ! = += -= *= /= %=
 
-Strings are indexed from 0.
+All others are left associative.
 
-Bracket syntax is supported:
+### 3.3 Deep Copy and Deep Compare
 
-    "hello"[1]
+-   All assignments perform deep copy.
+-   All comparisons perform deep comparison.
 
-Equivalent to:
+### 3.4 Expression Rules
 
-    "hello"#1
+After removing unary `!`, the checker sees only:
 
-## 3.2 Object Dereference Operator (-\>)
+-   value
+-   operator
 
-Object support exists internally but is not currently usable.
+Legal expression rules:
 
-------------------------------------------------------------------------
+1.  Must alternate between value and operator.
+2.  Must start and end with value.
 
-# 4. Statements
+Parentheses are validated recursively and replaced as value during
+checking.
 
-Supported statements:
+Unary `!` must be followed by:
 
-    let
-    print
-    scan
-    if
-    else
-    while
-    break
-    continue
-    block statement
-    expression statement
+-   value
+-   `(`
+-   another `!`
 
-## 4.1 Variable Declaration (let)
+Example of legal but runtime-error expression:
 
-    let a;
-    let a = 9;
-    let b = "hello";
-
-If not initialized, default value is:
-
-    number(0)
-
-Multiple declarations of the same name in the same scope are allowed.
-Only the last declared variable is effective.
-
-## 4.2 Print
-
-    print expr;
-
-Prints the evaluated result to standard output.
-
-Example:
-
-    print "hello world\n";
-
-Supported escape sequences:
-
-    \n  \\  \a  \b  \f  \r  \t  \v  \"
-
-Not supported:
-
-    \'
-
-## 4.3 Scan
-
-    scan expr;
-
-1.  Evaluate expr
-2.  Read a string from standard input
-3.  Assign it to the evaluated result
-
-The result must be assignable. Otherwise behavior is undefined.
-
-## 4.4 If
-
-    if expr: statement
-
-expr must evaluate to number.
-
-If value != 0 → execute statement.
-
-Example:
-
-    if 1==1:print "giao";
-
-## 4.5 Else
-
-    else statement
-
-Associates with the nearest unmatched if inside the same block.
-
-If no matching if is found, it is syntactically valid but does nothing.
-
-## 4.6 While
-
-    while expr: statement
-
-Evaluates expr before each iteration.
-
-Example:
-
-    while a>0:{
-        print a;
-        a=a-1;
-    }
-
-## 4.7 Break and Continue
-
-Behavior similar to common C-style languages.
-
-They may appear anywhere. If used inside a normal block, execution of
-that block stops immediately.
-
-## 4.8 Block Statement
-
-    {
-        statement
-    }
-
-Empty block `{}` is not allowed.
-
-## 4.9 Expression Statement
-
-If a statement does not begin with a keyword and is not a block, it is
-treated as an expression statement.
-
-Example:
-
-    1+1;
-    a=a+1;
-
-Empty statement `;` is not allowed.
+    1 = 1;
 
 ------------------------------------------------------------------------
 
-# 5. Scope Rules
+## 4. Statements
 
-Scope behavior is similar to C.
+Three types:
 
-Inner scope variables shadow outer ones.
+-   normal statement\
+-   expression statement\
+-   block
+
+A statement must end with `;` or be wrapped in `{}`.
+
+------------------------------------------------------------------------
+
+### 4.1 Block
+
+A block contains more than one statement and defines scope.
 
 Example:
 
     {
-        let a=9;
+        let a = 9;
         {
-            let a=8;
+            let a = 8;
             print a;
         }
         print a;
     }
 
-Output:
+------------------------------------------------------------------------
 
-    8
-    9
+### 4.2 Expression Statement
+
+An expression followed by `;`.
+
+    a = 10;
+    1 + 1;
 
 ------------------------------------------------------------------------
 
-# 6. Source File Rules
+### 4.3 Let
 
-A source file must contain exactly one statement.
+Variable declaration.
 
-Valid:
+Examples:
 
-    let a=9;
+    let a;
+    let b = 1 + 9;
+    let c = "giao";
+    let d[3];
+    let e[9];
+
+------------------------------------------------------------------------
+
+### 4.4 Print
+
+Prints evaluated expression to stdout.
+
+    print "Hello World!\n";
+
+------------------------------------------------------------------------
+
+### 4.5 Scan
+
+Reads input as string and assigns to assignable reference.
+
+    scan a;
+
+------------------------------------------------------------------------
+
+### 4.6 If
+
+    if expr:stat
+
+`expr` must evaluate to number.
+
+------------------------------------------------------------------------
+
+### 4.7 Else
+
+    else stat;
+
+Links to nearest previous `if` in same block.
+
+------------------------------------------------------------------------
+
+### 4.8 While
+
+    while expr:stat
+
+Repeats while `expr` is non-zero.
+
+------------------------------------------------------------------------
+
+### 4.9 Break
+
+    break;
+
+Stops nearest `while` loop.
+
+------------------------------------------------------------------------
+
+### 4.10 Continue
+
+    continue;
+
+Skips to next loop iteration.
+
+------------------------------------------------------------------------
+
+### 4.11 Execute
+
+    execute expr;
+
+`expr` must evaluate to string containing a legal Oblivia statement.
+
+Example:
+
+    execute "print\"hello\";";
+
+------------------------------------------------------------------------
+
+## 5. Interpreter
+
+Two modes:
+
+-   RELP mode
+-   File mode
+
+### 5.1 RELP Mode
+
+Commands:
+
+    /exit
+    /help
+
+Statements are tokenized, checked, built, and executed.
+
+------------------------------------------------------------------------
+
+### 5.2 File Mode
+
+The entire file must be a legal statement.
+
+Example:
+
+    print "Hello World!\n";
 
 Or:
 
     {
-        let a=9;
-        print a;
-    }
-
-------------------------------------------------------------------------
-
-# 7. Example Program
-
-    {
-        let a=100;
-        while a>0:{
+        let a = 100;
+        while a > 0:{
             print a;
             print "\n";
-            if a%2==0:{
+            if a % 2 == 0:{
                 print "AAAAA\n";
             }
             else{
                 print "BBBBB\n";
             }
-            if a==50:{
+            if a == 50:{
                 break;
             }
-            a=a-1;
+            a = a - 1;
         }
     }
-
-------------------------------------------------------------------------
-
-# 8. Interpreter Modes
-
-## 8.1 File Execution
-
-    oblivia program.obl
-
-## 8.2 REPL Mode
-
-    oblivia
-
-Users may input a single statement or REPL commands.
-
-## 8.3 REPL Commands
-
-    /exit
-    /help
-
-/help currently exists but is not implemented.
-
-------------------------------------------------------------------------
-
-# 9. Arrays
-
-## 9.1 Array Declaration
-
-Arrays can now be declared using the syntax `let name#expr;`, where `expr` must evaluate to a `number`. The result of this expression will be the length of the array. Additionally, the following shorthand is supported: `let name[expr];`. Arrays are initialized with all elements set to `0`.
-
-Example:
-
-    let arr#5; 
-    let arr[3]; 
-
-## 9.2 Array Elements
-
-Arrays can store any type of value, including `number`, `string`, or other arrays. The elements of the array can be modified after initialization.
-
-Example:
-
-    let arr[5];
-    arr[0] = 10;
-    arr[1] = "hello";
-    arr[2] = arr; 
-
-## 9.3 Array Output
-
-The `print` statement can output arrays. The elements of the array will be printed in a space-separated format enclosed in `{}`.
-
-Example:
-
-    let arr[5];
-    print arr; 
-
-## 9.4 Array Comparisons and Copying
-
-Arrays support deep comparison using `==` and `!=`, which compares both the length and the values of each element. Assigning one array to another will perform a deep copy, duplicating each element.
-
-Example:
-
-    let arr1[3];
-    let arr2[3];
-    arr1[0] = 1;
-    arr1[1] = 2;
-    arr1[2] = 3;
-    arr2 = arr1; 
-
-------------------------------------------------------------------------
-
-# 10. Identifier Rules
-
-Identifiers can only contain uppercase letters, lowercase letters, and underscores. Numbers are not allowed in identifiers.

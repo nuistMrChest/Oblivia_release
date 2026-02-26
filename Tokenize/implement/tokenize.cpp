@@ -97,6 +97,12 @@ namespace Oblivia{
                 final_res.push_back(tmp_str);
                 res[0].erase(0,1);
             }
+            else if(isDoubleQuoteChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))while(!res[0].empty()){
+                std::string tmp_str;
+                tmp_str+=res[0][0];
+                final_res.push_back(tmp_str);
+                res[0].erase(0,1);
+            }
             else if(isBackSlashChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))while(!res[0].empty()){
                 std::string tmp_str;
                 tmp_str+=res[0][0];

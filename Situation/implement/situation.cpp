@@ -31,6 +31,8 @@ namespace Oblivia{
             case Situation::NotBoolean:os<<"NotBoolean";break;
             case Situation::UnlinkedElse:os<<"UnlinkedElse";break;
             case Situation::BadEscape:os<<"BadEscape";break;
+            case Situation::NotString:os<<"NotString";break;
+            case Situation::IlegalStatement:os<<"IlegalStatement";break;
         }
         return os;
     }

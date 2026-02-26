@@ -34,6 +34,9 @@ namespace Oblivia{
         NotBoolean,
         UnlinkedElse,
 
+        NotString,
+        IlegalStatement,
+
         BadEscape
     };
 
