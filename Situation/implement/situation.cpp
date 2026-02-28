@@ -33,6 +33,9 @@ namespace Oblivia{
             case Situation::BadEscape:os<<"BadEscape";break;
             case Situation::NotString:os<<"NotString";break;
             case Situation::IlegalStatement:os<<"IlegalStatement";break;
+            case Situation::NotOwner:os<<"NotOwner";break;
+            case Situation::NotMovable:os<<"NotMovable";break;
+            case Situation::UsedIdentifier:os<<"UsedIdentifier";break;
         }
         return os;
     }

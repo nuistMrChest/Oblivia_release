@@ -27,9 +27,10 @@ namespace Oblivia{
         Attribute();
         Attribute(const std::string&n,const Object&f,int i);
         Attribute(const std::string&n,const Object&f,int i,const Number&a);
-        Attribute(const std::string&n,const Object&f,int i,const std::shared_ptr<Array>&a);
-        Attribute(const std::string&n,const Object&f,int i,const std::shared_ptr<Object>&a);
-        Attribute(const std::string&n,const Object&f,int i,const std::shared_ptr<String>&a);
+        Attribute(const std::string&n,const Object&f,int i,const std::unique_ptr<Array>&a);
+        Attribute(const std::string&n,const Object&f,int i,const std::unique_ptr<Object>&a);
+        Attribute(const std::string&n,const Object&f,int i,const std::unique_ptr<String>&a);
+        Attribute(const std::string&n,const Object&f,int i,const std::unique_ptr<Reference>&a);
         Attribute&operator=(const Attribute&a);
         Number operator==(const Attribute&a)const;
         Number&getNumber();
@@ -39,16 +40,17 @@ namespace Oblivia{
 
     class Object:public Value{
         private:
-        std::vector<std::shared_ptr<Attribute>>attributes;
+        std::vector<std::unique_ptr<Attribute>>attributes;
         public:
         std::unordered_map<std::string,int>getIndex;
         Object();
         Object(const Object&a);
         Attribute&visitAttribute(const std::string&name);
         void addAttribute(const std::string&name,const Number&a);
-        void addAttribute(const std::string&name,const std::shared_ptr<Array>&a);
-        void addAttribute(const std::string&name,const std::shared_ptr<Object>&a);
-        void addAttribute(const std::string&name,const std::shared_ptr<String>&a);
+        void addAttribute(const std::string&name,const std::unique_ptr<Array>&a);
+        void addAttribute(const std::string&name,const std::unique_ptr<Object>&a);
+        void addAttribute(const std::string&name,const std::unique_ptr<String>&a);
+        void addAttribute(const std::string&name,const std::unique_ptr<Reference>&a);
         void print(std::ostream&os)const;
         Number operator==(const Object&a)const;
     };

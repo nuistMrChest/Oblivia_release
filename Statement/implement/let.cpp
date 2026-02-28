@@ -12,7 +12,7 @@ namespace Oblivia{
         val_ty=Type::Null;
     }
 
-    Let::Let(int l,const Tokens&t){
+    Let::Let(size_t l,const Tokens&t){
         tokens=t;
         type=StatementType::Let;
         stack_level=l;
@@ -38,7 +38,10 @@ namespace Oblivia{
 
     Situation Let::execute(ExecuteResult&result){
         result=ExecuteResult::Other;
-        Variable* var=new Variable(stack_level,name);
+        for(auto i=Variable::variables.begin();i!=Variable::variables.end();i++){
+            if(i->first.level==stack_level&&i->first.name==name)return Situation::UsedIdentifier;
+        }
+        Variable*var=new Variable(stack_level,name);
         if(tokens.size()>3){
             switch(val_ty){
                 case Type::Number:{
@@ -53,7 +56,8 @@ namespace Oblivia{
                     if(si!=Situation::Success)return si;
                     if(getType(val.v,stack_level)!=Type::Number)return Situation::BadIndexing;
                     var->type=Type::Array;
-                    var->as.v=std::make_shared<Array>(getValueType(val.v,stack_level).Num().getSizeT());
+                    var->as.v=std::make_unique<Array>(getValueType(val.v,stack_level).Num().getSizeT());
+                    break;
                 }
                 default:return Situation::NotAssigner;
             }

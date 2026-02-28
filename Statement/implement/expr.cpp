@@ -10,7 +10,7 @@ namespace Oblivia{
         e=Expression();
     }
 
-    Expr::Expr(int l,const Tokens&t){
+    Expr::Expr(size_t l,const Tokens&t){
         type=StatementType::Expr;
         stack_level=l;
         tokens=t;

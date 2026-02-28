@@ -9,7 +9,7 @@ namespace Oblivia{
         tokens=Tokens();
     }
 
-    Continue::Continue(int l,const Tokens&t){
+    Continue::Continue(size_t l,const Tokens&t){
         type=StatementType::Continue;
         stack_level=l;
         tokens=t;

@@ -9,7 +9,7 @@ namespace Oblivia{
         tokens=Tokens();
     }
 
-    Break::Break(int l,const Tokens&t){
+    Break::Break(size_t l,const Tokens&t){
         type=StatementType::Break;
         stack_level=l;
         tokens=t;

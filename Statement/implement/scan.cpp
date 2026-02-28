@@ -10,7 +10,7 @@ namespace Oblivia{
         tokens=Tokens();
     }
 
-    Scan::Scan(int l,const Tokens&t){
+    Scan::Scan(size_t l,const Tokens&t){
         type=StatementType::Scan;
         stack_level=l;
         tokens=t;
@@ -38,7 +38,7 @@ namespace Oblivia{
         ValueType&val=getValueTypeRef(e.v,stack_level);
         std::string tmp_s;
         std::getline(std::cin,tmp_s);
-        val.v=std::make_shared<String>(tmp_s);
+        val.v=std::make_unique<String>(tmp_s);
         return Situation::Success;
     }
 

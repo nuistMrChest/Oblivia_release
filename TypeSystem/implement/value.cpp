@@ -15,6 +15,7 @@ namespace Oblivia{
             case Type::Function:os<<"Function";break;
             case Type::Object:os<<"Object";break;
             case Type::String:os<<"String";break;
+            case Type::Refence:os<<"Reference";break;
         }
         return os;
     }

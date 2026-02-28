@@ -13,7 +13,7 @@ namespace Oblivia{
         have_else=false;
     }
 
-    If::If(int l,const Tokens&to){
+    If::If(size_t l,const Tokens&to){
         e=nullptr;
         stack_level=l;
         tokens=to;

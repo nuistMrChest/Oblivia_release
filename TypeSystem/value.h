@@ -13,7 +13,8 @@ namespace Oblivia{
         Array,
         Function,
         Object,
-        String
+        String,
+        Refence
     };
 
     std::ostream&operator<<(std::ostream&os,const Type&a);

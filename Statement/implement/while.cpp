@@ -12,7 +12,7 @@ namespace Oblivia{
         j=Expression();
     }
 
-    While::While(int l,const Tokens&t){
+    While::While(size_t l,const Tokens&t){
         type=StatementType::While;
         stack_level=l;
         tokens=t;

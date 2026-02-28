@@ -12,7 +12,7 @@ namespace Oblivia{
     Number zero(0);
 
     bool isValue(const Token&a){
-        return a.type==TokenType::Number||a.type==TokenType::String||a.type==TokenType::Variable||a.type==TokenType::ArrayElement||a.type==TokenType::ObjectAttribute||a.type==TokenType::Identifier;
+        return a.type==TokenType::Number||a.type==TokenType::String||a.type==TokenType::Variable||a.type==TokenType::ArrayElement||a.type==TokenType::ObjectAttribute||a.type==TokenType::Identifier||a.type==TokenType::Reference;
     }
 
     bool isExpression(const Tokens&a){
@@ -50,7 +50,7 @@ namespace Oblivia{
         std::stack<Token>stk;
 
         for(size_t i=0;i<b.size();i++){
-            if(b[i].type==TokenType::String||b[i].type==TokenType::Number||b[i].type==TokenType::Operator||b[i].type==TokenType::Identifier||b[i].str=="(")stk.push(b[i]);
+            if(b[i].type==TokenType::Reference||b[i].type==TokenType::String||b[i].type==TokenType::Number||b[i].type==TokenType::Operator||b[i].type==TokenType::Identifier||b[i].str=="(")stk.push(b[i]);
             else if(b[i].str==")"){
                 if(!isValue(stk.top()))return false;
                 TokenType type=TokenType::Null;
@@ -128,6 +128,11 @@ namespace Oblivia{
                 else return zero;
                 break;
             }
+            case TokenType::Reference:{
+                if(a.as.ref().calculatable)return a.as.ref().getConstNumber();
+                else return zero;
+                break;
+            }
         }
         return zero;
     }
@@ -147,6 +152,7 @@ namespace Oblivia{
             case TokenType::ArrayElement:return a.as.ele().calculatable;break;
             case TokenType::ObjectAttribute:return a.as.att().calculatable;break;
             case TokenType::Number:return a.as.num().calculatable;break;
+            case TokenType::Reference:return a.as.ref().calculatable;break;
             default:return false;
         }
         return false;
@@ -166,6 +172,7 @@ namespace Oblivia{
             case TokenType::Variable:
             case TokenType::ArrayElement:
             case TokenType::ObjectAttribute:return true;break;
+            case TokenType::Reference:return true;break;
             default:return false;
         }
         return false;
@@ -185,6 +192,7 @@ namespace Oblivia{
             case TokenType::Variable:return true;
             case TokenType::Number:return true;
             case TokenType::String:return true;
+            case TokenType::Reference:return true;
             default:return false;
         }
         return false;
@@ -209,8 +217,11 @@ namespace Oblivia{
             }
             case TokenType::String:{
                 ValueType tmp;
-                tmp.v=std::make_shared<String>(a.as.str());
+                tmp.v=std::make_unique<String>(a.as.str());
                 return tmp;
+            }
+            case TokenType::Reference:{
+                return*(a.as.ref().ref);
             }
             default:{
                 ValueType tmp;
@@ -237,6 +248,7 @@ namespace Oblivia{
             case TokenType::Variable:return a.as.var().as;break;
             case TokenType::ArrayElement:return a.as.ele().as;break;
             case TokenType::ObjectAttribute:return a.as.att().as;break;
+            case TokenType::Reference:return*(a.as.ref().ref);break;
             default:{
                 Na.v=Number(0);
                 return Na;
@@ -262,6 +274,7 @@ namespace Oblivia{
             case TokenType::ObjectAttribute:return a.as.att().getType();break;
             case TokenType::Number:return Type::Number;break;
             case TokenType::String:return Type::String;break;
+            case TokenType::Reference:return a.as.ref().ref_type;break;
             default:return Type::Null;
         }
         return Type::Null;
@@ -283,6 +296,7 @@ namespace Oblivia{
             case TokenType::Variable:return a.as.var().type;break;
             case TokenType::ArrayElement:return a.as.ele().type;break;
             case TokenType::ObjectAttribute:return a.as.att().type;break;
+            case TokenType::Reference:return a.as.ref().ref_type;break;
             default:return Nb;
         }
         return Nb;
@@ -299,6 +313,7 @@ namespace Oblivia{
             case Type::Array:return leftV.Arr()==rightV.Arr();
             case Type::Object:return leftV.Obj()==rightV.Obj();
             case Type::String:return leftV.Str()==rightV.Str();
+            case Type::Refence:return leftV.Ref()==rightV.Ref();
             default:return Number(0);
         }
         return Number(0);
@@ -320,6 +335,7 @@ namespace Oblivia{
             case TokenType::Variable:return a.as.var().getType()==Type::String;break;
             case TokenType::ArrayElement:return a.as.ele().getType()==Type::String;break;
             case TokenType::ObjectAttribute:return a.as.att().getType()==Type::String;break;
+            case TokenType::Reference:return a.as.ref().ref_type==Type::String;break;
             default:return false;
         }
         return false;
@@ -341,6 +357,7 @@ namespace Oblivia{
             case TokenType::Variable:tmpS=a.as.var().as.Str();break;
             case TokenType::ArrayElement:tmpS=a.as.ele().as.Str();break;
             case TokenType::ObjectAttribute:tmpS=a.as.att().as.Str();break;
+            case TokenType::Reference:tmpS=a.as.ref().ref->Str();break;
             default:;
         }
         return tmpS;
@@ -460,7 +477,7 @@ namespace Oblivia{
                 if(!assignable(left,level))return Situation::NotAssignable;
                 if(!assigner(right,level))return Situation::NotAssigner;
                 if((leftCal&&rightCal)){
-                    getValueTypeRef(left,level).Num()=getValueType(left,level).Num()+getValueType(right,level).Num();
+                    getNumberRef(getValueTypeRef(left,level),getTypeRef(left,level))=getNumber(getValueType(left,level),getType(left,level))+getNumber(getValueType(right,level),getType(right,level));
                     res.str=left.str;
                     res.type=left.type;
                     res.as=left.as;
@@ -478,7 +495,7 @@ namespace Oblivia{
                 if(!(leftCal&&rightCal))return Situation::NotCalcutalable;
                 if(!assignable(left,level))return Situation::NotAssignable;
                 if(!assigner(right,level))return Situation::NotAssigner;
-                getValueTypeRef(left,level).Num()=getValueType(left,level).Num()-getValueType(right,level).Num();
+                    getNumberRef(getValueTypeRef(left,level),getTypeRef(left,level))=getNumber(getValueType(left,level),getType(left,level))-getNumber(getValueType(right,level),getType(right,level));
                 res.str=left.str;
                 res.type=left.type;
                 res.as=left.as;
@@ -488,7 +505,7 @@ namespace Oblivia{
                 if(!(leftCal&&rightCal))return Situation::NotCalcutalable;
                 if(!assignable(left,level))return Situation::NotAssignable;
                 if(!assigner(right,level))return Situation::NotAssigner;
-                getValueTypeRef(left,level).Num()=getValueType(left,level).Num()*getValueType(right,level).Num();
+                    getNumberRef(getValueTypeRef(left,level),getTypeRef(left,level))=getNumber(getValueType(left,level),getType(left,level))*getNumber(getValueType(right,level),getType(right,level));
                 res.str=left.str;
                 res.type=left.type;
                 res.as=left.as;
@@ -498,7 +515,7 @@ namespace Oblivia{
                 if(!(leftCal&&rightCal))return Situation::NotCalcutalable;
                 if(!assignable(left,level))return Situation::NotAssignable;
                 if(!assigner(right,level))return Situation::NotAssigner;
-                getValueTypeRef(left,level).Num()=getValueType(left,level).Num()/getValueType(right,level).Num();
+                    getNumberRef(getValueTypeRef(left,level),getTypeRef(left,level))=getNumber(getValueType(left,level),getType(left,level))/getNumber(getValueType(right,level),getType(right,level));
                 res.str=left.str;
                 res.type=left.type;
                 res.as=left.as;
@@ -508,7 +525,7 @@ namespace Oblivia{
                 if(!(leftCal&&rightCal))return Situation::NotCalcutalable;
                 if(!assignable(left,level))return Situation::NotAssignable;
                 if(!assigner(right,level))return Situation::NotAssigner;
-                getValueTypeRef(left,level).Num()=getValueType(left,level).Num()%getValueType(right,level).Num();
+                    getNumberRef(getValueTypeRef(left,level),getTypeRef(left,level))=getNumber(getValueType(left,level),getType(left,level))%getNumber(getValueType(right,level),getType(right,level));
                 res.str=left.str;
                 res.type=left.type;
                 res.as=left.as;
@@ -527,18 +544,18 @@ namespace Oblivia{
                         case TokenType::Identifier:{
                             for(size_t i=level;i>0;i--){
                                 VarKey tmp(left.str,i);
-                                if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr)if(Variable::variables[tmp]->getType()!=Type::Array)return Situation::NotArray;
+                                if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr)if(!isArray(Variable::variables[tmp]->as,Variable::variables[tmp]->type))return Situation::NotArray;
                             }
                             break;
                         }
-                        case TokenType::Variable:if(left.as.var().getType()!=Type::Array)return Situation::NotArray;break;
-                        case TokenType::ArrayElement:if(left.as.ele().getType()!=Type::Array)return Situation::NotArray;break;
-                        case TokenType::ObjectAttribute:if(left.as.att().getType()!=Type::Array)return Situation::NotArray;break;
+                        case TokenType::Variable:if(!isArray(left.as.var().as,left.as.var().type))return Situation::NotArray;break;
+                        case TokenType::ArrayElement:if(!isArray(left.as.ele().as,left.as.ele().type))return Situation::NotArray;break;
+                        case TokenType::ObjectAttribute:if(!isArray(left.as.att().as,left.as.att().type))return Situation::NotArray;break;
                         default:return Situation::NotArray;
                     }
                     if(!rightCal)return Situation::BadIndexing;
                     size_t ind=toNumber(right,level).getSizeT();
-                    Array&tmpA=getValueTypeRef(left,level).Arr();
+                    Array&tmpA=getArrayRef(getValueTypeRef(left,level),getType(left,level));
                     if(ind>tmpA.getLength())return Situation::BadIndexing;
                     res.str="$";
                     res.type=TokenType::ArrayElement;
@@ -740,6 +757,10 @@ namespace Oblivia{
             }
             case Type::String:{
                 os<<val.Str();
+                break;
+            }
+            case Type::Refence:{
+                os<<val.Ref();
                 break;
             }
         }

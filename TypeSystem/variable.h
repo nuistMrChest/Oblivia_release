@@ -9,33 +9,48 @@
 #include<unordered_map>
 #include"number.h"
 #include<variant>
+#include<vector>
 
 namespace Oblivia{
     class Array;
     class Object;
     class String;
+    class Reference;
 
     struct ValueType{
         std::variant<
             Number,
-            std::shared_ptr<Array>,
-            std::shared_ptr<Object>,
-            std::shared_ptr<String>
+            std::unique_ptr<Array>,
+            std::unique_ptr<Object>,
+            std::unique_ptr<String>,
+            std::unique_ptr<Reference>
         >v;
+        std::vector<Reference*>refed_by;
+
         Number&Num();
         Array&Arr();
         Object&Obj();
         String&Str();
+        Reference&Ref();
 
         const Number&Num()const;
         const Array&Arr()const;
         const Object&Obj()const;
         const String&Str()const;
+        const Reference&Ref()const;
 
         ValueType();
         ValueType(const ValueType&a);
         ValueType&operator=(const ValueType&a);
+        ~ValueType();
     };
+
+    Number&getNumberRef(ValueType&a,Type t);
+    Number getNumber(const ValueType&a,Type t);
+
+    bool isArray(const ValueType&a,Type t);
+    Array&getArrayRef(ValueType&a,Type t);
+    Array getArray(const ValueType&a,Type t);
 
     struct VarKey{
         std::string name;
@@ -51,16 +66,17 @@ namespace Oblivia{
     class Variable:public Calculatable{
         private:
         std::string name;
-        int stack_level;
+        size_t stack_level;
         public:
         Type type;
         ValueType as;
         static std::unordered_map<VarKey,Variable*,VarKeyHash>variables;
-        Variable(int l,const std::string&n);
-        Variable(int l,const std::string&n,const Number&v);
-        Variable(int l,const std::string&n,const Array&v);
-        Variable(int l,const std::string&n,const Object&v);
-        Variable(int l,const std::string&n,const String&v);
+        Variable(size_t l,const std::string&n);
+        Variable(size_t l,const std::string&n,const Number&v);
+        Variable(size_t l,const std::string&n,const Array&v);
+        Variable(size_t l,const std::string&n,const Object&v);
+        Variable(size_t l,const std::string&n,const String&v);
+        Variable(size_t l,const std::string&n,const Reference&v);
         Number&getNumber();
         const Number&getConstNumber()const;
         Type getType()const;

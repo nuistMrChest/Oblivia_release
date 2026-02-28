@@ -25,6 +25,7 @@ set(OBLIVIA_SOURCES
     ./TypeSystem/implement/value.cpp
     ./TypeSystem/implement/variable.cpp
     ./TypeSystem/implement/operator.cpp
+    ./TypeSystem/implement/reference.cpp
     ./Tokenize/implement/checker.cpp
     ./Tokenize/implement/tokenize.cpp
     ./Expression/implement/expression.cpp
@@ -40,6 +41,8 @@ set(OBLIVIA_SOURCES
     ./Statement/implement/statement.cpp
     ./Statement/implement/while.cpp
     ./Statement/implement/execute.cpp
+    ./Statement/implement/move.cpp
+    ./Statement/implement/borrow.cpp
 )
 
 # Windows only: add icon resource

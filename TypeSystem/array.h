@@ -26,9 +26,10 @@ namespace Oblivia{
         ArrayElement();
         ArrayElement(const Array&f,size_t i);
         ArrayElement(const Array&f,size_t i,const Number&a);
-        ArrayElement(const Array&f,size_t i,const std::shared_ptr<Array>&a);
-        ArrayElement(const Array&f,size_t i,const std::shared_ptr<Object>&a);
-        ArrayElement(const Array&f,size_t i,const std::shared_ptr<String>&a);
+        ArrayElement(const Array&f,size_t i,const std::unique_ptr<Array>&a);
+        ArrayElement(const Array&f,size_t i,const std::unique_ptr<Object>&a);
+        ArrayElement(const Array&f,size_t i,const std::unique_ptr<String>&a);
+        ArrayElement(const Array&f,size_t i,const std::unique_ptr<Reference>&a);
         ArrayElement&operator=(const ArrayElement&a);
         Number operator==(const ArrayElement&a)const;
         Number&getNumber();
@@ -38,7 +39,7 @@ namespace Oblivia{
 
     class Array:public Value{
         private:
-        std::vector<std::shared_ptr<ArrayElement>>array;
+        std::vector<std::unique_ptr<ArrayElement>>array;
         public:
         Array();
         Array(int length);

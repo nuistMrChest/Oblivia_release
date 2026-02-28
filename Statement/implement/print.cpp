@@ -11,7 +11,7 @@ namespace Oblivia{
         e=Expression();
     }
 
-    Print::Print(int l,const Tokens&t){
+    Print::Print(size_t l,const Tokens&t){
         type=StatementType::Print;
         stack_level=l;
         tokens=t;

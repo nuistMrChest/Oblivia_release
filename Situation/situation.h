@@ -37,7 +37,12 @@ namespace Oblivia{
         NotString,
         IlegalStatement,
 
-        BadEscape
+        BadEscape,
+
+        NotOwner,
+        NotMovable,
+
+        UsedIdentifier
     };
 
     std::ostream&operator<<(std::ostream&os,const Situation&a);

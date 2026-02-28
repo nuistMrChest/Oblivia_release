@@ -32,7 +32,9 @@ namespace Oblivia{
         Fn,
         Break,
         Continue,
-        Execute
+        Execute,
+        Borrow,
+        Move
     };
 
     StatementType getStateType(const Tokens&a);
@@ -60,14 +62,14 @@ namespace Oblivia{
         friend std::ostream&operator<<(std::ostream&os,const Statement&a);
     };
 
-    Situation buildStatement(std::unique_ptr<Statement>&r,int l,const Tokens&t);
+    Situation buildStatement(std::unique_ptr<Statement>&r,size_t l,const Tokens&t);
 
     class Expr:public Statement{
         private:
         Expression e;
         public:
         Expr();
-        Expr(int l,const Tokens&t);
+        Expr(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();
@@ -79,7 +81,7 @@ namespace Oblivia{
         Expression val;
         Type val_ty;
         Let();
-        Let(int l,const Tokens&t);
+        Let(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();
@@ -90,7 +92,7 @@ namespace Oblivia{
         Expression e;
         public:
         Print();
-        Print(int l,const Tokens&t);
+        Print(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();
@@ -99,7 +101,7 @@ namespace Oblivia{
     class Scan:public Statement{
         public:
         Scan();
-        Scan(int l,const Tokens&t);
+        Scan(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();
@@ -112,7 +114,7 @@ namespace Oblivia{
         std::vector<std::unique_ptr<Statement>>subStates;
 
         Block();
-        Block(int l,const Tokens&t);
+        Block(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();
@@ -126,7 +128,7 @@ namespace Oblivia{
         std::unique_ptr<Statement>t;
 
         If();
-        If(int l,const Tokens&t);
+        If(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();
@@ -137,7 +139,7 @@ namespace Oblivia{
         std::unique_ptr<Statement>f;
         
         Else();
-        Else(int l,const Tokens&t);
+        Else(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();
@@ -148,7 +150,7 @@ namespace Oblivia{
         std::unique_ptr<Statement>d;
         Expression j;
         While();
-        While(int l,const Tokens&t);
+        While(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();
@@ -157,7 +159,7 @@ namespace Oblivia{
     class Break:public Statement{
         public:
         Break();
-        Break(int l,const Tokens&t);
+        Break(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();
@@ -166,7 +168,7 @@ namespace Oblivia{
     class Continue:public Statement{
         public:
         Continue();
-        Continue(int l,const Tokens&t);
+        Continue(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();
@@ -176,7 +178,31 @@ namespace Oblivia{
         public:
         std::string code;
         Execute();
-        Execute(int l,const Tokens&t);
+        Execute(size_t l,const Tokens&t);
+        Situation execute(ExecuteResult&result);
+        static bool isLegal(const Tokens&t);
+        Situation build();
+    };
+
+    bool isOwner(const Token&a,size_t l);
+
+    class Move:public Statement{
+        public:
+        Expression from;
+        Expression to;
+        Move();
+        Move(size_t l,const Tokens&t);
+        Situation execute(ExecuteResult&result);
+        static bool isLegal(const Tokens&t);
+        Situation build();
+    };
+
+    class Borrow:public Statement{
+        public:
+        std::string name;
+        Expression from;
+        Borrow();
+        Borrow(size_t l,const Tokens&t);
         Situation execute(ExecuteResult&result);
         static bool isLegal(const Tokens&t);
         Situation build();

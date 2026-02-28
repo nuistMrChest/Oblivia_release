@@ -34,6 +34,9 @@ namespace Oblivia{
             case TokenType::Space:os<<"Space";break;
             case TokenType::Caret:os<<"Caret";break;
             case TokenType::At:os<<"At";break;
+            case TokenType::Object:os<<"Object";break;
+            case TokenType::Array:os<<"Array";break;
+            case TokenType::Reference:os<<"Reference";break;
         }
         return os;
     }
@@ -272,15 +275,15 @@ namespace Oblivia{
     }
 
     Variable&Token::TokenValue::var(){
-        return *std::get<Variable*>(v);
+        return*std::get<Variable*>(v);
     }
 
     ArrayElement&Token::TokenValue::ele(){
-        return *std::get<ArrayElement*>(v);
+        return*std::get<ArrayElement*>(v);
     }
 
     Attribute&Token::TokenValue::att(){
-        return *std::get<Attribute*>(v);
+        return*std::get<Attribute*>(v);
     }
 
     Operator&Token::TokenValue::ope(){
@@ -292,11 +295,15 @@ namespace Oblivia{
     }
 
     Object&Token::TokenValue::obj(){
-        return *std::get<Object*>(v);
+        return*std::get<Object*>(v);
     }
 
     Array&Token::TokenValue::arr(){
-        return *std::get<Array*>(v);
+        return*std::get<Array*>(v);
+    }
+
+    Reference&Token::TokenValue::ref(){
+        return*std::get<Reference*>(v);
     }
 
     const Number&Token::TokenValue::num()const{
@@ -304,15 +311,15 @@ namespace Oblivia{
     }
 
     const Variable&Token::TokenValue::var()const{
-        return *std::get<Variable*>(v);
+        return*std::get<Variable*>(v);
     }
 
     const ArrayElement&Token::TokenValue::ele()const{
-        return *std::get<ArrayElement*>(v);
+        return*std::get<ArrayElement*>(v);
     }
 
     const Attribute&Token::TokenValue::att()const{
-        return *std::get<Attribute*>(v);
+        return*std::get<Attribute*>(v);
     }
 
     const Operator&Token::TokenValue::ope()const{
@@ -324,12 +331,16 @@ namespace Oblivia{
     }
 
     const Object&Token::TokenValue::obj()const{
-        return *std::get<Object*>(v);
+        return*std::get<Object*>(v);
     }
 
     const Array&Token::TokenValue::arr()const{
-        return *std::get<Array*>(v);
+        return*std::get<Array*>(v);
     } 
+    
+    const Reference&Token::TokenValue::ref()const{
+        return*std::get<Reference*>(v);
+    }
     
     Token::~Token(){
         if(type==TokenType::Object){

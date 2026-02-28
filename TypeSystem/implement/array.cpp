@@ -6,6 +6,7 @@
 #include<memory>
 #include"../string.h"
 #include"../object.h"
+#include"../reference.h"
 
 namespace Oblivia{
     Type ArrayElement::getType()const{
@@ -30,22 +31,28 @@ namespace Oblivia{
         calculatable=true;
     }
 
-    ArrayElement::ArrayElement(const Array&f,size_t i,const std::shared_ptr<Array>&a):index(i),father(&f){
+    ArrayElement::ArrayElement(const Array&f,size_t i,const std::unique_ptr<Array>&a):index(i),father(&f){
         type=Type::Array;
-        as.v=std::make_shared<Array>(*a);
+        as.v=std::make_unique<Array>(*a);
         calculatable=false;
     }
 
-    ArrayElement::ArrayElement(const Array&f,size_t i,const std::shared_ptr<Object>&a):index(i),father(&f){
+    ArrayElement::ArrayElement(const Array&f,size_t i,const std::unique_ptr<Object>&a):index(i),father(&f){
         type=Type::Object;
-        as.v=std::make_shared<Object>(*a);
+        as.v=std::make_unique<Object>(*a);
         calculatable=false;
     }
 
-    ArrayElement::ArrayElement(const Array&f,size_t i,const std::shared_ptr<String>&a):index(i),father(&f){
+    ArrayElement::ArrayElement(const Array&f,size_t i,const std::unique_ptr<String>&a):index(i),father(&f){
         type=Type::String;
-        as.v=std::make_shared<String>(*a);
+        as.v=std::make_unique<String>(*a);
         calculatable=false;
+    }
+
+    ArrayElement::ArrayElement(const Array&f,size_t i,const std::unique_ptr<Reference>&a):index(i),father(&f){
+        type=Type::Refence;
+        as.v=std::make_unique<Reference>(*a);
+        calculatable=a->calculatable;
     }
 
     ArrayElement&ArrayElement::operator=(const ArrayElement&a){
@@ -68,6 +75,8 @@ namespace Oblivia{
             case Type::Number:os<<a.as.Num();break;
             case Type::Array:os<<a.as.Arr();break;
             case Type::Object:os<<a.as.Obj();break;
+            case Type::Refence:os<<a.as.Ref();break;
+            case Type::String:os<<a.as.Str();break;
         }
         return os;
     }
@@ -82,7 +91,7 @@ namespace Oblivia{
         if(length>0){
             array.resize(length);
             for(int i=0;i<length;i++){
-                array[i]=std::make_shared<ArrayElement>(*this,i);
+                array[i]=std::make_unique<ArrayElement>(*this,i);
             }
         }
         else array.resize(0);
@@ -93,9 +102,11 @@ namespace Oblivia{
         this->array.resize(a.array.size());
         for(int i=0;i<a.array.size();i++){
             switch(a.array[i]->getType()){
-                case Type::Number:this->array[i]=std::make_shared<ArrayElement>(*this,i,a.array[i]->as.Num());break;
-                case Type::Array:this->array[i]=std::make_shared<ArrayElement>(*this,i,std::make_shared<Array>(a.array[i]->as.Arr()));break;
-                case Type::Object:this->array[i]=std::make_shared<ArrayElement>(*this,i,std::make_shared<Object>(a.array[i]->as.Obj()));break;
+                case Type::Number:this->array[i]=std::make_unique<ArrayElement>(*this,i,a.array[i]->as.Num());break;
+                case Type::Array:this->array[i]=std::make_unique<ArrayElement>(*this,i,std::make_unique<Array>(a.array[i]->as.Arr()));break;
+                case Type::Object:this->array[i]=std::make_unique<ArrayElement>(*this,i,std::make_unique<Object>(a.array[i]->as.Obj()));break;
+                case Type::String:this->array[i]=std::make_unique<ArrayElement>(*this,i,std::make_unique<String>(a.array[i]->as.Str()));break;
+                case Type::Refence:this->array[i]=std::make_unique<ArrayElement>(*this,i,std::make_unique<Reference>(a.array[i]->as.Ref()));break;
             }
         }
     }
@@ -105,9 +116,11 @@ namespace Oblivia{
         this->array.resize(a.array.size());
         for(int i=0;i<a.array.size();i++){
             switch(a.array[i]->getType()){
-                case Type::Number:this->array[i]=std::make_shared<ArrayElement>(*this,i,a.array[i]->as.Num());break;
-                case Type::Array:this->array[i]=std::make_shared<ArrayElement>(*this,i,std::make_shared<Array>(a.array[i]->as.Arr()));break;
-                case Type::Object:this->array[i]=std::make_shared<ArrayElement>(*this,i,std::make_shared<Object>(a.array[i]->as.Obj()));break;
+                case Type::Number:this->array[i]=std::make_unique<ArrayElement>(*this,i,a.array[i]->as.Num());break;
+                case Type::Array:this->array[i]=std::make_unique<ArrayElement>(*this,i,std::make_unique<Array>(a.array[i]->as.Arr()));break;
+                case Type::Object:this->array[i]=std::make_unique<ArrayElement>(*this,i,std::make_unique<Object>(a.array[i]->as.Obj()));break;
+                case Type::String:this->array[i]=std::make_unique<ArrayElement>(*this,i,std::make_unique<String>(a.array[i]->as.Str()));break;
+                case Type::Refence:this->array[i]=std::make_unique<ArrayElement>(*this,i,std::make_unique<Reference>(a.array[i]->as.Ref()));break;
             }
         }
         return *this;
@@ -135,6 +148,8 @@ namespace Oblivia{
             case Type::Number:return this->as.Num()==a.as.Num();
             case Type::Array:return this->as.Arr()==a.as.Arr();
             case Type::Object:return this->as.Obj()==a.as.Obj();
+            case Type::String:return this->as.Str()==a.as.Str();
+            case Type::Refence:return this->as.Ref()==a.as.Ref();
             default:return Number(0);
         }
         return Number(0);

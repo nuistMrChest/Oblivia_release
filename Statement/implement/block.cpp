@@ -12,7 +12,7 @@ namespace Oblivia{
         subStates=std::vector<std::unique_ptr<Statement>>();
     }
 
-    Block::Block(int l,const Tokens&t){
+    Block::Block(size_t l,const Tokens&t){
         stack_level=l;
         type=StatementType::Block;
         tokens=t;

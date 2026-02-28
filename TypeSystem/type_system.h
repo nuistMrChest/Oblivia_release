@@ -10,5 +10,6 @@
 #include"variable.h"
 #include"operator.h"
 #include"string.h"
+#include"reference.h"
 
 #endif

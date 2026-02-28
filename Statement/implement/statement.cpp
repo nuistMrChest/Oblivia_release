@@ -18,6 +18,8 @@ namespace Oblivia{
             case StatementType::Break:os<<"Break";break;
             case StatementType::Continue:os<<"Continue";break;
             case StatementType::Execute:os<<"Execute";break;
+            case StatementType::Move:os<<"Move";break;
+            case StatementType::Borrow:os<<"Borrow";break;
         }
         return os;
     }
@@ -39,6 +41,8 @@ namespace Oblivia{
         else if(a[0].str=="break")return StatementType::Break;
         else if(a[0].str=="continue")return StatementType::Continue;
         else if(a[0].str=="execute")return StatementType::Execute;
+        else if(a[0].str=="move")return StatementType::Move;
+        else if(a[0].str=="borrow")return StatementType::Borrow;
         else return StatementType::Expr;
     }
 
@@ -50,7 +54,7 @@ namespace Oblivia{
         return os;
     }
 
-    Situation buildStatement(std::unique_ptr<Statement>&r,int l,const Tokens&t){
+    Situation buildStatement(std::unique_ptr<Statement>&r,size_t l,const Tokens&t){
         StatementType type=getStateType(t);
         switch(type){
             case StatementType::Null:return Situation::BadStatement;
@@ -66,6 +70,8 @@ namespace Oblivia{
             case StatementType::Break:r=std::make_unique<Break>(l,t);break;
             case StatementType::Continue:r=std::make_unique<Continue>(l,t);break;
             case StatementType::Execute:r=std::make_unique<Execute>(l,t);break;
+            case StatementType::Move:r=std::make_unique<Move>(l,t);break;
+            case StatementType::Borrow:r=std::make_unique<Borrow>(l,t);break;
             default:return Situation::Success;
         }
         return Situation::Success;
@@ -83,7 +89,9 @@ namespace Oblivia{
             While::isLegal(t)||
             Break::isLegal(t)||
             Continue::isLegal(t)||
-            Execute::isLegal(t)
+            Execute::isLegal(t)||
+            Move::isLegal(t)||
+            Borrow::isLegal(t)
             // Fn::isLegal(t)
         );
     }

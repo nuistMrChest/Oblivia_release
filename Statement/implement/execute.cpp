@@ -1,3 +1,5 @@
+// Copyright (c) 2026 MrChest
+// Licensed under the MIT License
 #include"../statement.h"
 #include"../../Tokenize/tokenize.h"
 #include"../../Expression/expression.h"
@@ -10,7 +12,7 @@ namespace Oblivia{
         code="";
     }
 
-    Execute::Execute(int l,const Tokens&t){
+    Execute::Execute(size_t l,const Tokens&t){
         type=StatementType::Execute;
         stack_level=l;
         tokens=t;

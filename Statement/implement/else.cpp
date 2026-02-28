@@ -11,7 +11,7 @@ namespace Oblivia{
         f=nullptr;
     }
 
-    Else::Else(int l,const Tokens&t){
+    Else::Else(size_t l,const Tokens&t){
         type=StatementType::Else;
         stack_level=l;
         tokens=t;

@@ -8,6 +8,7 @@
 #include<memory>
 #include<iostream>
 #include"../string.h"
+#include"../reference.h"
 
 namespace Oblivia{
     Type Attribute::getType()const{
@@ -32,22 +33,28 @@ namespace Oblivia{
         calculatable=true;
     }
 
-    Attribute::Attribute(const std::string&n,const Object&f,int i,const std::shared_ptr<Array>&a):index(i),father(&f),name(n){
+    Attribute::Attribute(const std::string&n,const Object&f,int i,const std::unique_ptr<Array>&a):index(i),father(&f),name(n){
         type=Type::Array;
-        as.v=std::make_shared<Array>(*a);
+        as.v=std::make_unique<Array>(*a);
         calculatable=false;
     }
 
-    Attribute::Attribute(const std::string&n,const Object&f,int i,const std::shared_ptr<Object>&a):index(i),father(&f),name(n){
+    Attribute::Attribute(const std::string&n,const Object&f,int i,const std::unique_ptr<Object>&a):index(i),father(&f),name(n){
         type=Type::Object;
-        as.v=std::make_shared<Object>(*a);
+        as.v=std::make_unique<Object>(*a);
         calculatable=false;
     }
 
-    Attribute::Attribute(const std::string&n,const Object&f,int i,const std::shared_ptr<String>&a):index(i),father(&f),name(n){
+    Attribute::Attribute(const std::string&n,const Object&f,int i,const std::unique_ptr<String>&a):index(i),father(&f),name(n){
         type=Type::String;
-        as.v=std::make_shared<String>(*a);
+        as.v=std::make_unique<String>(*a);
         calculatable=false;
+    }
+
+    Attribute::Attribute(const std::string&n,const Object&f,int i,const std::unique_ptr<Reference>&a):index(i),father(&f),name(n){
+        type=Type::Refence;
+        as.v=std::make_unique<Reference>(*a);
+        calculatable=a->calculatable;
     }
 
     Attribute&Attribute::operator=(const Attribute&a){
@@ -71,6 +78,8 @@ namespace Oblivia{
             case Type::Number:os<<a.as.Num();break;
             case Type::Array:os<<a.as.Arr();break;
             case Type::Object:os<<a.as.Obj();break;
+            case Type::String:os<<a.as.Str();break;
+            case Type::Refence:os<<a.as.Ref();break;
         }
         return os;
     }
@@ -86,9 +95,11 @@ namespace Oblivia{
         this->getIndex=a.getIndex;
         for(int i=0;i<a.attributes.size();i++){
             switch(a.attributes[i]->getType()){
-                case Type::Number:this->attributes[i]=std::make_shared<Attribute>(a.attributes[i]->name,*this,i,a.attributes[i]->as.Num());break;
-                case Type::Array:this->attributes[i]=std::make_shared<Attribute>(a.attributes[i]->name,*this,i,std::make_shared<Array>(a.attributes[i]->as.Arr()));break;
-                case Type::Object:this->attributes[i]=std::make_shared<Attribute>(a.attributes[i]->name,*this,i,std::make_shared<Object>(a.attributes[i]->as.Obj()));break;
+                case Type::Number:this->attributes[i]=std::make_unique<Attribute>(a.attributes[i]->name,*this,i,a.attributes[i]->as.Num());break;
+                case Type::Array:this->attributes[i]=std::make_unique<Attribute>(a.attributes[i]->name,*this,i,std::make_unique<Array>(a.attributes[i]->as.Arr()));break;
+                case Type::Object:this->attributes[i]=std::make_unique<Attribute>(a.attributes[i]->name,*this,i,std::make_unique<Object>(a.attributes[i]->as.Obj()));break;
+                case Type::String:this->attributes[i]=std::make_unique<Attribute>(a.attributes[i]->name,*this,i,std::make_unique<String>(a.attributes[i]->as.Str()));break;
+                case Type::Refence:this->attributes[i]=std::make_unique<Attribute>(a.attributes[i]->name,*this,i,std::make_unique<Reference>(a.attributes[i]->as.Ref()));break;
             }
         }
     }
@@ -99,25 +110,31 @@ namespace Oblivia{
 
     void Object::addAttribute(const std::string&name,const Number&a){
         int index=attributes.size();
-        attributes.push_back(std::make_shared<Attribute>(name,*this,index,a));
+        attributes.push_back(std::make_unique<Attribute>(name,*this,index,a));
         getIndex[name]=index;
     }
 
-    void Object::addAttribute(const std::string&name,const std::shared_ptr<Array>&a){
+    void Object::addAttribute(const std::string&name,const std::unique_ptr<Array>&a){
         int index=attributes.size();
-        attributes.push_back(std::make_shared<Attribute>(name,*this,index,a));
+        attributes.push_back(std::make_unique<Attribute>(name,*this,index,a));
         getIndex[name]=index;
     }
 
-    void Object::addAttribute(const std::string&name,const std::shared_ptr<Object>&a){
+    void Object::addAttribute(const std::string&name,const std::unique_ptr<Object>&a){
         int index=attributes.size();
-        attributes.push_back(std::make_shared<Attribute>(name,*this,index,a));
+        attributes.push_back(std::make_unique<Attribute>(name,*this,index,a));
         getIndex[name]=index;
     }
 
-    void Object::addAttribute(const std::string&name,const std::shared_ptr<String>&a){
+    void Object::addAttribute(const std::string&name,const std::unique_ptr<String>&a){
         int index=attributes.size();
-        attributes.push_back(std::make_shared<Attribute>(name,*this,index,a));
+        attributes.push_back(std::make_unique<Attribute>(name,*this,index,a));
+        getIndex[name]=index;
+    }
+
+    void Object::addAttribute(const std::string&name,const std::unique_ptr<Reference>&a){
+        int index=attributes.size();
+        attributes.push_back(std::make_unique<Attribute>(name,*this,index,a));
         getIndex[name]=index;
     }
 
@@ -135,6 +152,8 @@ namespace Oblivia{
             case Type::Number:return this->as.Num()==a.as.Num();
             case Type::Array:return this->as.Arr()==a.as.Arr();
             case Type::Object:return this->as.Obj()==a.as.Obj();
+            case Type::String:return this->as.Str()==a.as.Str();
+            case Type::Refence:return this->as.Ref()==a.as.Ref();
             default:return Number(0);
         }
         return Number(0);

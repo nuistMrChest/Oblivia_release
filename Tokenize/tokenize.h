@@ -22,7 +22,9 @@ namespace Oblivia{
         "else",
         "while",
         "break",
-        "continue"
+        "continue",
+        "borrow",
+        "move"
     };
 
     enum class TokenType{
@@ -57,7 +59,9 @@ namespace Oblivia{
         At,
 
         Object,
-        Array
+        Array,
+
+        Reference
     };
 
     std::ostream&operator<<(std::ostream&os,const TokenType&a);
@@ -68,7 +72,7 @@ namespace Oblivia{
         std::string str;
         TokenType type;
         struct TokenValue{
-            std::variant<Number,Variable*,ArrayElement*,Attribute*,Operator,String,Object*,Array*>v;
+            std::variant<Number,Variable*,ArrayElement*,Attribute*,Operator,String,Object*,Array*,Reference*>v;
             Number&num();
             Variable&var();
             ArrayElement&ele();
@@ -77,6 +81,7 @@ namespace Oblivia{
             String&str();
             Object&obj();
             Array&arr();
+            Reference&ref();
 
             const Number&num()const;
             const Variable&var()const;
@@ -86,6 +91,7 @@ namespace Oblivia{
             const String&str()const;
             const Object&obj()const;
             const Array&arr()const;
+            const Reference&ref()const;
         }as;
         Token();
         ~Token();        
