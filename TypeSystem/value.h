@@ -14,7 +14,7 @@ namespace Oblivia{
         Function,
         Object,
         String,
-        Refence
+        Reference
     };
 
     std::ostream&operator<<(std::ostream&os,const Type&a);

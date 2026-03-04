@@ -96,7 +96,7 @@ namespace Oblivia{
         return a;
     }
 
-    const Number&toNumber(const Token&a,size_t l){
+    const Number&toNumber(Token&a,size_t l){
         switch(a.type){
             case TokenType::Identifier:{
                 for(size_t i=l;i>0;i--){
@@ -109,27 +109,27 @@ namespace Oblivia{
                 break;
             }
             case TokenType::Variable:{
-                if(a.as.var().calculatable)return a.as.var().getConstNumber();
+                if(a.as.var().calculatable)return a.as.var().getNumber();
                 else return zero;
                 break;
             }
             case TokenType::ArrayElement:{
-                if(a.as.ele().calculatable)return a.as.ele().getConstNumber();
+                if(a.as.ele().calculatable)return a.as.ele().getNumber();
                 else return zero;
                 break;
             }
             case TokenType::ObjectAttribute:{
-                if(a.as.att().calculatable)return a.as.att().getConstNumber();
+                if(a.as.att().calculatable)return a.as.att().getNumber();
                 else return zero;
                 break;
             }
             case TokenType::Number:{
-                if(a.as.num().calculatable)return a.as.num().getConstNumber();
+                if(a.as.num().calculatable)return a.as.num().getNumber();
                 else return zero;
                 break;
             }
             case TokenType::Reference:{
-                if(a.as.ref().calculatable)return a.as.ref().getConstNumber();
+                if(a.as.ref().calculatable)return a.as.ref().getNumber();
                 else return zero;
                 break;
             }
@@ -203,13 +203,25 @@ namespace Oblivia{
             case TokenType::Identifier:{
                 for(size_t i=level;i>0;i--){
                     VarKey tmp(a.str,i);
-                    if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr)return Variable::variables[tmp]->as;
+                    if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr){
+                        if(Variable::variables[tmp]->type==Type::Reference)return*(Variable::variables[tmp]->as.Ref().ref);
+                        return Variable::variables[tmp]->as;
+                    }
                 }
                 break;
             }
-            case TokenType::Variable:return a.as.var().as;break;
-            case TokenType::ArrayElement:return a.as.ele().as;break;
-            case TokenType::ObjectAttribute:return a.as.att().as;break;
+            case TokenType::Variable:{
+                if(a.as.var().type==Type::Reference)return*(a.as.var().as.Ref().ref);
+                return a.as.var().as;
+            }break;
+            case TokenType::ArrayElement:{
+                if(a.as.ele().type==Type::Reference)return*(a.as.ele().as.Ref().ref);
+                return a.as.ele().as;
+            }break;
+            case TokenType::ObjectAttribute:{
+                if(a.as.att().type==Type::Reference)return*(a.as.att().as.Ref().ref);
+                return a.as.att().as;
+            }break;
             case TokenType::Number:{
                 ValueType tmp;
                 tmp.v=a.as.num();
@@ -241,13 +253,25 @@ namespace Oblivia{
             case TokenType::Identifier:{
                 for(size_t i=level;i>0;i--){
                     VarKey tmp(a.str,i);
-                    if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr)return Variable::variables[tmp]->as;
+                    if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr){
+                        if(Variable::variables[tmp]->type==Type::Reference)return*(Variable::variables[tmp]->as.Ref().ref);
+                        return Variable::variables[tmp]->as;
+                    }
                 }
                 break;
             }
-            case TokenType::Variable:return a.as.var().as;break;
-            case TokenType::ArrayElement:return a.as.ele().as;break;
-            case TokenType::ObjectAttribute:return a.as.att().as;break;
+            case TokenType::Variable:{
+                if(a.as.var().type==Type::Reference)return*(a.as.var().as.Ref().ref);
+                return a.as.var().as;
+            }break;
+            case TokenType::ArrayElement:{
+                if(a.as.ele().type==Type::Reference)return*(a.as.ele().as.Ref().ref);
+                return a.as.ele().as;
+            }break;
+            case TokenType::ObjectAttribute:{
+                if(a.as.att().type==Type::Reference)return*(a.as.att().as.Ref().ref);
+                return a.as.att().as;
+            }break;
             case TokenType::Reference:return*(a.as.ref().ref);break;
             default:{
                 Na.v=Number(0);
@@ -261,20 +285,30 @@ namespace Oblivia{
     Type getType(const Token&a,size_t level){
         switch(a.type){
             case TokenType::Identifier:{
-               
                 for(size_t i=level;i>0;i--){
                     VarKey tmp(a.str,i);
-                    
-                    if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr)return Variable::variables[tmp]->getType();
+                    if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr){
+                        if(Variable::variables[tmp]->type==Type::Reference)return*(Variable::variables[tmp]->as.Ref().ref_type);
+                        return Variable::variables[tmp]->getType();
+                    }
                 }
                 break;
             }
-            case TokenType::Variable:return a.as.var().getType();break;
-            case TokenType::ArrayElement:return a.as.ele().getType();break;
-            case TokenType::ObjectAttribute:return a.as.att().getType();break;
+            case TokenType::Variable:{
+                if(a.as.var().type==Type::Reference)return*(a.as.var().as.Ref().ref_type);
+                return a.as.var().getType();
+            }break;
+            case TokenType::ArrayElement:{
+                if(a.as.ele().type==Type::Reference)return*(a.as.ele().as.Ref().ref_type);
+                return a.as.ele().getType();
+            }break;
+            case TokenType::ObjectAttribute:{
+                if(a.as.att().type==Type::Reference)return*(a.as.att().as.Ref().ref_type);
+                return a.as.att().getType();
+            }break;
             case TokenType::Number:return Type::Number;break;
             case TokenType::String:return Type::String;break;
-            case TokenType::Reference:return a.as.ref().ref_type;break;
+            case TokenType::Reference:return*(a.as.ref().ref_type);break;
             default:return Type::Null;
         }
         return Type::Null;
@@ -285,18 +319,28 @@ namespace Oblivia{
     Type&getTypeRef(Token&a,size_t level){
         switch(a.type){
             case TokenType::Identifier:{
-               
                 for(size_t i=level;i>0;i--){
                     VarKey tmp(a.str,i);
-                    
-                    if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr)return Variable::variables[tmp]->type;
+                    if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr){
+                        if(Variable::variables[tmp]->type==Type::Reference)return*(Variable::variables[tmp]->as.Ref().ref_type);
+                        return Variable::variables[tmp]->type;
+                    }
                 }
                 break;
             }
-            case TokenType::Variable:return a.as.var().type;break;
-            case TokenType::ArrayElement:return a.as.ele().type;break;
-            case TokenType::ObjectAttribute:return a.as.att().type;break;
-            case TokenType::Reference:return a.as.ref().ref_type;break;
+            case TokenType::Variable:{
+                if(a.as.var().type==Type::Reference)return*(a.as.var().as.Ref().ref_type);
+                return a.as.var().type;
+            }break;
+            case TokenType::ArrayElement:{
+                if(a.as.ele().type==Type::Reference)return*(a.as.ele().as.Ref().ref_type);
+                return a.as.ele().type;
+            }break;
+            case TokenType::ObjectAttribute:{
+                if(a.as.att().type==Type::Reference)return*(a.as.att().as.Ref().ref_type);
+                return a.as.att().type;
+            }break;
+            case TokenType::Reference:return*(a.as.ref().ref_type);break;
             default:return Nb;
         }
         return Nb;
@@ -313,7 +357,7 @@ namespace Oblivia{
             case Type::Array:return leftV.Arr()==rightV.Arr();
             case Type::Object:return leftV.Obj()==rightV.Obj();
             case Type::String:return leftV.Str()==rightV.Str();
-            case Type::Refence:return leftV.Ref()==rightV.Ref();
+            case Type::Reference:return leftV.Ref()==rightV.Ref();
             default:return Number(0);
         }
         return Number(0);
@@ -327,15 +371,25 @@ namespace Oblivia{
                     VarKey tmp(a.str,i);
                     if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr){
                         if(Variable::variables[tmp]->getType()==Type::String)return true;
+                        if(Variable::variables[tmp]->type==Type::Reference&&*(Variable::variables[tmp]->as.Ref().ref_type)==Type::String)return true;
                     }
                 }
                 return false;
                 break;
             }
-            case TokenType::Variable:return a.as.var().getType()==Type::String;break;
-            case TokenType::ArrayElement:return a.as.ele().getType()==Type::String;break;
-            case TokenType::ObjectAttribute:return a.as.att().getType()==Type::String;break;
-            case TokenType::Reference:return a.as.ref().ref_type==Type::String;break;
+            case TokenType::Variable:{
+                if(a.as.var().type==Type::Reference&&*(a.as.var().as.Ref().ref_type)==Type::String)return true;
+                return a.as.var().getType()==Type::String;
+            }break;
+            case TokenType::ArrayElement:{
+                if(a.as.ele().type==Type::Reference&&*(a.as.ele().as.Ref().ref_type)==Type::String)return true;
+                return a.as.ele().getType()==Type::String;
+            }break;
+            case TokenType::ObjectAttribute:{
+                if(a.as.att().type==Type::Reference&&*(a.as.att().as.Ref().ref_type)==Type::String)return true;
+                return a.as.att().getType()==Type::String;
+            }break;
+            case TokenType::Reference:return*(a.as.ref().ref_type)==Type::String;break;
             default:return false;
         }
         return false;
@@ -349,14 +403,24 @@ namespace Oblivia{
                 for(size_t i=level;i>0;i--){
                     VarKey tmp(a.str,i);
                     if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr){
+                        if(Variable::variables[tmp]->type==Type::Reference)return Variable::variables[tmp]->as.Ref().ref->Str(); 
                         if(Variable::variables[tmp]->getType()==Type::String)tmpS=Variable::variables[tmp]->as.Str();
                     }
                 }
                 break;
             }
-            case TokenType::Variable:tmpS=a.as.var().as.Str();break;
-            case TokenType::ArrayElement:tmpS=a.as.ele().as.Str();break;
-            case TokenType::ObjectAttribute:tmpS=a.as.att().as.Str();break;
+            case TokenType::Variable:{
+                if(a.as.var().type==Type::Reference)return a.as.var().as.Ref().ref->Str();
+                tmpS=a.as.var().as.Str();
+            }break;
+            case TokenType::ArrayElement:{
+                if(a.as.ele().type==Type::Reference)return a.as.ele().as.Ref().ref->Str();
+                tmpS=a.as.ele().as.Str();
+            }break;
+            case TokenType::ObjectAttribute:{
+                if(a.as.att().type==Type::Reference)return a.as.att().as.Ref().ref->Str();
+                tmpS=a.as.att().as.Str();
+            }break;
             case TokenType::Reference:tmpS=a.as.ref().ref->Str();break;
             default:;
         }
@@ -759,7 +823,7 @@ namespace Oblivia{
                 os<<val.Str();
                 break;
             }
-            case Type::Refence:{
+            case Type::Reference:{
                 os<<val.Ref();
                 break;
             }

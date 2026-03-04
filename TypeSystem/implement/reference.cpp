@@ -12,7 +12,7 @@
 namespace Oblivia{
     void Reference::print(std::ostream&os)const{
         if(refed){
-            switch(ref_type){
+            switch(*ref_type){
                 case Type::Number:os<<ref->Num();break;
                 case Type::Array:os<<ref->Arr();break;
                 case Type::Object:os<<ref->Obj();break;
@@ -27,19 +27,19 @@ namespace Oblivia{
 
     Reference::Reference(){
         ref=nullptr;
-        ref_type=Type::Null;
+        ref_type=nullptr;
         refed=false;
-        type=Type::Refence;
+        type=Type::Reference;
         calculatable=false;
     }
 
-    Reference::Reference(ValueType&v,Type t){
+    Reference::Reference(ValueType&v,Type*t){
         ref=&v;
         ref_type=t;
         refed=true;
-        type=Type::Refence;
+        type=Type::Reference;
         v.refed_by.push_back(this);
-        if(t==Type::Number)calculatable=true;
+        if(*t==Type::Number)calculatable=true;
         else calculatable=false;
     }
 

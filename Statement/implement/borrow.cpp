@@ -46,13 +46,13 @@ namespace Oblivia{
         if(sf!=Situation::Success)return sf;
         if(!isOwner(from.v,stack_level))return Situation::NotOwner;
         ValueType&from_v=getValueTypeRef(from.v,stack_level);
-        Type ft=getType(from.v,stack_level);
+        Type&ft=getTypeRef(from.v,stack_level);
         for(auto i=Variable::variables.begin();i!=Variable::variables.end();i++){
             if(i->first.level==stack_level&&i->first.name==name)return Situation::UsedIdentifier;
         }
-        Variable*tmp=new Variable(stack_level,name,Reference(from_v,ft));
+        Variable*tmp=new Variable(stack_level,name,Reference(from_v,&ft));
         std::cout<<from.v.type<<std::endl;
-        std::cout<<"asdfasdfasdf "<<Reference(from_v,ft)<<" asdfasdfasfd\n";
+        std::cout<<"asdfasdfasdf "<<Reference(from_v,&ft)<<" asdfasdfasfd\n";
         std::cout<<tmp->type<<" "<<tmp->as.Ref().ref_type<<std::endl;
         return Situation::Success;
     }

@@ -82,7 +82,7 @@ namespace Oblivia{
         for(size_t i=0;i<refed_by.size();i++){
             refed_by[i]->ref=nullptr;
             refed_by[i]->refed=false;
-            refed_by[i]->ref_type=Type::Null;
+            refed_by[i]->ref_type=nullptr;
         }
     }
 
@@ -136,18 +136,18 @@ namespace Oblivia{
 
     Variable::Variable(size_t l,const std::string&n,const Reference&v):name(n),stack_level(l){
         as.v=std::make_unique<Reference>(v);
-        type=Type::Refence;
+        type=Type::Reference;
         calculatable=v.calculatable;
         variables[VarKey(n,l)]=this;
     }
 
     Number&Variable::getNumber(){
-        if(type==Type::Refence)return as.Ref().ref->Num();
+        if(type==Type::Reference)return as.Ref().ref->Num();
         return as.Num();
     }
 
     const Number&Variable::getConstNumber()const{
-        if(type==Type::Refence)return as.Ref().ref->Num();
+        if(type==Type::Reference)return as.Ref().ref->Num();
         return as.Num();
     }
 
@@ -160,7 +160,7 @@ namespace Oblivia{
     Number&getNumberRef(ValueType&a,Type t){
         switch(t){
             case Type::Number:return a.Num();
-            case Type::Refence:return a.Ref().ref->Num();
+            case Type::Reference:return a.Ref().ref->Num();
             default:return z;
         }
         return z;
@@ -169,7 +169,7 @@ namespace Oblivia{
     Number getNumber(const ValueType&a,Type t){
         switch(t){
             case Type::Number:return a.Num();
-            case Type::Refence:return a.Ref().ref->Num();
+            case Type::Reference:return a.Ref().ref->Num();
             default:return Number(0);
         }
         return Number(0);
@@ -178,7 +178,7 @@ namespace Oblivia{
     bool isArray(const ValueType&a,Type t){
         switch(t){
             case Type::Array:return true;
-            case Type::Refence:return a.Ref().ref_type==Type::Array;
+            case Type::Reference:return*(a.Ref().ref_type)==Type::Array;
             default:return false;
         }
         return false;
@@ -189,7 +189,7 @@ namespace Oblivia{
     Array&getArrayRef(ValueType&a,Type t){
         switch(t){
             case Type::Array:return a.Arr();
-            case Type::Refence:return a.Ref().ref->Arr();
+            case Type::Reference:return a.Ref().ref->Arr();
             default:return dfa;
         }
         return dfa;
@@ -198,7 +198,7 @@ namespace Oblivia{
     Array getArray(const ValueType&a,Type t){
         switch(t){
             case Type::Array:return a.Arr();
-            case Type::Refence:return a.Ref().ref->Arr();
+            case Type::Reference:return a.Ref().ref->Arr();
             default:return dfa;
         }
         return dfa;

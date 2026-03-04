@@ -13,12 +13,12 @@ namespace Oblivia{
     class Reference:public Value,public Calculatable{
         public:
         ValueType*ref;
-        Type ref_type;
+        Type*ref_type;
         bool refed;
 
         void print(std::ostream&os)const;
         Reference();
-        Reference(ValueType&v,Type t);
+        Reference(ValueType&v,Type*t);
         Reference(const Reference&a);
         Reference&operator=(const Reference&a);
         Number operator==(const Reference&a)const;
