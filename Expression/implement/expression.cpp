@@ -302,6 +302,20 @@ namespace Oblivia{
         return Nb;
     }
 
+    ValueType&getAssignableValueTypeRef(Token&a,size_t level){
+        ValueType&target=getValueTypeRef(a,level);
+        Type&t=getTypeRef(a,level);
+        if(t==Type::Refence&&target.Ref().ref!=nullptr)return *target.Ref().ref;
+        return target;
+    }
+
+    Type&getAssignableTypeRef(Token&a,size_t level){
+        ValueType&target=getValueTypeRef(a,level);
+        Type&t=getTypeRef(a,level);
+        if(t==Type::Refence&&target.Ref().ref!=nullptr)return target.Ref().ref_type;
+        return t;
+    }
+
     Number compair(const Token&left,const Token&right,size_t level){
         Type leftT=getType(left,level);
         Type rightT=getType(right,level);
@@ -466,8 +480,8 @@ namespace Oblivia{
             case Operator::Assignment:{
                 if(!assignable(left,level))return Situation::NotAssignable;
                 if(!assigner(right,level))return Situation::NotAssigner;
-                getValueTypeRef(left,level)=getValueType(right,level);
-                getTypeRef(left,level)=getType(right,level);
+                getAssignableValueTypeRef(left,level)=getValueType(right,level);
+                getAssignableTypeRef(left,level)=getType(right,level);
                 res.str=left.str;
                 res.type=left.type;
                 res.as=left.as;
@@ -483,7 +497,7 @@ namespace Oblivia{
                     res.as=left.as;
                 }
                 else if(isString(left,level)&&isString(right,level)){
-                    getValueTypeRef(left,level).Str()=getValueType(left,level).Str()+getValueType(right,level).Str();
+                    getAssignableValueTypeRef(left,level).Str()=getValueType(left,level).Str()+getValueType(right,level).Str();
                     res.str=left.str;
                     res.type=left.type;
                     res.as=left.as;
