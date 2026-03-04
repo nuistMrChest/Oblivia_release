@@ -51,9 +51,6 @@ namespace Oblivia{
             if(i->first.level==stack_level&&i->first.name==name)return Situation::UsedIdentifier;
         }
         Variable*tmp=new Variable(stack_level,name,Reference(from_v,&ft));
-        std::cout<<from.v.type<<std::endl;
-        std::cout<<"asdfasdfasdf "<<Reference(from_v,&ft)<<" asdfasdfasfd\n";
-        std::cout<<tmp->type<<" "<<tmp->as.Ref().ref_type<<std::endl;
         return Situation::Success;
     }
 }
