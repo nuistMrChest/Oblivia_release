@@ -1,12 +1,13 @@
 # Oblivia Programming Language
 
-## 1. Type System
+## 1. Right Values
 
-Currently, Oblivia provides four built-in types:
+Currently, Oblivia provides five built-in types:
 
 -   number\
 -   string\
 -   array\
+-   reference\
 -   object (not available yet)
 
 ### 1.1 Number
@@ -75,7 +76,14 @@ Object type exists but is not implemented yet.
 
 ------------------------------------------------------------------------
 
-## 2. Reference Types
+### 1.5 Reference
+
+Reference has no literal and can only be used in borrow statement.\
+It acts like what references do in c++.
+
+------------------------------------------------------------------------
+
+## 2. Left Values
 
 There are three reference types:
 
@@ -83,7 +91,7 @@ There are three reference types:
 -   array element\
 -   object attribute
 
-Values must be stored in reference types, otherwise they are literals.
+Right values must be stored in left values, otherwise they are literals.
 
 ------------------------------------------------------------------------
 
@@ -103,6 +111,8 @@ Examples:
 
     let a;
     let b = 10;
+
+If initialized through borrow statement, all the calculation of it is the calculation of it's refered left value.
 
 ------------------------------------------------------------------------
 
@@ -300,6 +310,24 @@ Skips to next loop iteration.
 Example:
 
     execute "print\"hello\";";
+
+------------------------------------------------------------------------
+
+### 4.12 Move
+
+    move expr_a,expr_b;
+
+The result of both `expr_a` and `expr_b` must be a left value.\
+Value stored in the result pf `expr_a` moves to the result of `expr_b`, and replaced with number 0.
+
+------------------------------------------------------------------------
+
+### 4.13 Borrow
+
+    borrow expr,a;
+
+The result of `expr` must be a left value.\
+Initialize a variable named `a` with a reference pointed towards the result of `expr`.
 
 ------------------------------------------------------------------------
 

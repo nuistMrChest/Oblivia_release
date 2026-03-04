@@ -26,7 +26,7 @@ namespace Oblivia{
 
     void REPL(){
         std::string input;
-        std::cout<<"Oblivia REPL v0.3.1"<<std::endl<<"By MrChest form NUIST"<<std::endl;
+        std::cout<<"Oblivia REPL v0.4.0"<<std::endl<<"By MrChest form NUIST"<<std::endl;
         while(1){
             std::cout<<">>";
             std::getline(std::cin,input);

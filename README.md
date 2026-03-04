@@ -21,6 +21,7 @@ Working components:
 -   `number`
 -   `string`
 -   `array`
+-   `reference`
 
 > object syntax exist but are not implemented yet.
 
@@ -35,6 +36,8 @@ Working components:
 -   `else`
 -   `while`
 -   `execute`
+-   `borrow`
+-   `move`
 -   block statements `{ ... }`
 -   expression statements
 
