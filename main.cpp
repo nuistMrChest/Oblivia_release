@@ -6,7 +6,7 @@
 #include"./Situation/situation.h"
 #include"./Statement/statement.h"
 #include"./Expression/expression.h"
-#include"relp.h"
+#include"repl.h"
 #include"interpreter.h"
 
 using namespace std;
@@ -17,7 +17,7 @@ int main(int argc,char**argv){
         std::cout<<"Too many arguments"<<std::endl;
         return 0;
     }
-    if(argc==1)RELP();
+    if(argc==1)REPL();
     else if(argc==2){
         std::string path=argv[1];
         interpreter(path);

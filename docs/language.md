@@ -307,10 +307,10 @@ Example:
 
 Two modes:
 
--   RELP mode
+-   REPL mode
 -   File mode
 
-### 5.1 RELP Mode
+### 5.1 REPL Mode
 
 Commands:
 

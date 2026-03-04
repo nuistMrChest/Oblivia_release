@@ -1,6 +1,6 @@
 // Copyright (c) 2026 MrChest
 // Licensed under the MIT License
-#include"../relp.h"
+#include"../repl.h"
 #include<string>
 #include<iostream>
 #include"../TypeSystem/type_system.h"
@@ -24,9 +24,9 @@ namespace Oblivia{
         else return Command::Null;
     }
 
-    void RELP(){
+    void REPL(){
         std::string input;
-        std::cout<<"Oblivia RELP v0.3.1"<<std::endl<<"By MrChest form NUIST"<<std::endl;
+        std::cout<<"Oblivia REPL v0.3.1"<<std::endl<<"By MrChest form NUIST"<<std::endl;
         while(1){
             std::cout<<">>";
             std::getline(std::cin,input);

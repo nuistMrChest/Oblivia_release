@@ -1,7 +1,7 @@
 // Copyright (c) 2026 MrChest
 // Licensed under the MIT License
-#ifndef RELP_H
-#define RELP_H
+#ifndef REPL_H
+#define REPL_H
 
 #include<string>
 
@@ -12,7 +12,7 @@ namespace Oblivia{
         Help
     };
     Command toCommand(const std::string&a);
-    void RELP();
+    void REPL();
     bool isCommand(const std::string&a);
 }
 

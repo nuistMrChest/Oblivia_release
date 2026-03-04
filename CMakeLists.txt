@@ -15,7 +15,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(OBLIVIA_SOURCES
     main.cpp
-    ./implement/relp.cpp
+    ./implement/repl.cpp
     ./implement/interpreter.cpp
     ./Situation/implement/situation.cpp
     ./TypeSystem/implement/string.cpp
