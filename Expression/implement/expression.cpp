@@ -235,6 +235,11 @@ namespace Oblivia{
             case TokenType::Reference:{
                 return*(a.as.ref().ref);
             }
+            case TokenType::Object:{
+                ValueType tmp;
+                tmp.v=std::make_unique<Object>(a.as.obj());
+                return tmp;
+            }
             default:{
                 ValueType tmp;
                 tmp.v=Number(0);
@@ -309,6 +314,7 @@ namespace Oblivia{
             case TokenType::Number:return Type::Number;break;
             case TokenType::String:return Type::String;break;
             case TokenType::Reference:return*(a.as.ref().ref_type);break;
+            case TokenType::Object:return Type::Object;break;
             default:return Type::Null;
         }
         return Type::Null;
@@ -432,17 +438,26 @@ namespace Oblivia{
         bool rightCal=getCal(right,level);
         switch(ope){
             case Operator::Addition:{
-                if((leftCal&&rightCal)){
+                if(getType(left,level)==Type::Object){
+                    if(right.type!=TokenType::Identifier)return Situation::BadAttributeName;
                     res.str="$";
-                    res.type=TokenType::Number;
-                    res.as.num()=toNumber(left,level)+toNumber(right,level);
+                    res.type=TokenType::Object;
+                    res.as.v=Object(getValueType(left,level).Obj());
+                    res.as.obj().addAttribute(right.str);
                 }
-                else if(isString(left,level)&&isString(right,level)){
-                    res.str="$";
-                    res.type=TokenType::String;
-                    res.as.v=getString(left,level)+getString(right,level);
+                else{
+                    if((leftCal&&rightCal)){
+                        res.str="$";
+                        res.type=TokenType::Number;
+                        res.as.num()=toNumber(left,level)+toNumber(right,level);
+                    }
+                    else if(isString(left,level)&&isString(right,level)){
+                        res.str="$";
+                        res.type=TokenType::String;
+                        res.as.v=getString(left,level)+getString(right,level);
+                    }
+                    else return Situation::NotCalcutalable;
                 }
-                else return Situation::NotCalcutalable;
                 break;
             }
             case Operator::Subtraction:{
@@ -538,16 +553,26 @@ namespace Oblivia{
                 break;
             }
             case Operator::AdditionAssignment:{
-                if(!assignable(left,level))return Situation::NotAssignable;
-                if(!assigner(right,level))return Situation::NotAssigner;
                 if((leftCal&&rightCal)){
+                    if(!assignable(left,level))return Situation::NotAssignable;
+                    if(!assigner(right,level))return Situation::NotAssigner;
                     getNumberRef(getValueTypeRef(left,level),getTypeRef(left,level))=getNumber(getValueType(left,level),getType(left,level))+getNumber(getValueType(right,level),getType(right,level));
                     res.str=left.str;
                     res.type=left.type;
                     res.as=left.as;
                 }
                 else if(isString(left,level)&&isString(right,level)){
+                    if(!assignable(left,level))return Situation::NotAssignable;
+                    if(!assigner(right,level))return Situation::NotAssigner;
                     getValueTypeRef(left,level).Str()=getValueType(left,level).Str()+getValueType(right,level).Str();
+                    res.str=left.str;
+                    res.type=left.type;
+                    res.as=left.as;
+                }
+                else if(getType(left,level)==Type::Object&&right.type==TokenType::Identifier){
+                    Object&tmpO=getValueTypeRef(left,level).Obj();
+                    if(tmpO.attributeExist(right.str))return Situation::AttributeExist;
+                    tmpO.addAttribute(right.str);
                     res.str=left.str;
                     res.type=left.type;
                     res.as=left.as;
@@ -629,23 +654,12 @@ namespace Oblivia{
             }
             case Operator::AttributeDereferencing:{
                 if(right.type!=TokenType::Identifier)return Situation::BadAttribute;
-                switch(left.type){
-                    case TokenType::Identifier:{
-                        for(size_t i=level;i>0;i--){
-                            VarKey tmp(left.str,i);
-                            if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr)if(Variable::variables[tmp]->getType()!=Type::Object)return Situation::NotObject;
-                        }
-                        break;
-                    }
-                    case TokenType::Variable:if(left.as.var().getType()!=Type::Object)return Situation::NotObject;break;
-                    case TokenType::ArrayElement:if(left.as.ele().getType()!=Type::Object)return Situation::NotObject;break;
-                    case TokenType::ObjectAttribute:if(left.as.att().getType()!=Type::Object)return Situation::NotObject;break;
-                    default:return Situation::NotObject;
-                }
+                if(getType(left,level)!=Type::Object)return Situation::NotObject;
                 std::string tmpAt=right.str;
                 Object&tmpO=getValueTypeRef(left,level).Obj();
                 res.str="$";
                 res.type=TokenType::ObjectAttribute;
+                if(!tmpO.attributeExist(tmpAt))return Situation::BadIndexing;
                 res.as.v=&tmpO.visitAttribute(tmpAt);
                 break;
             }

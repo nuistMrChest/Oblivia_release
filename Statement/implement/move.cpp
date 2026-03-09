@@ -90,6 +90,7 @@ namespace Oblivia{
             case Type::Array:to_v.v=std::move(std::get<std::unique_ptr<Array>>(from_v.v));break;
             case Type::Object:to_v.v=std::move(std::get<std::unique_ptr<Object>>(from_v.v));break;
             case Type::String:to_v.v=std::move(std::get<std::unique_ptr<String>>(from_v.v));break;
+            case Type::Reference:to_v.v=std::move(std::get<std::unique_ptr<Reference>>(from_v.v));break;
             default:return Situation::NotMovable;
         }
         from_v.v=Number(0);

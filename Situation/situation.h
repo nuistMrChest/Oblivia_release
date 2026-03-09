@@ -42,7 +42,10 @@ namespace Oblivia{
         NotOwner,
         NotMovable,
 
-        UsedIdentifier
+        UsedIdentifier,
+
+        AttributeExist,
+        BadAttributeName
     };
 
     std::ostream&operator<<(std::ostream&os,const Situation&a);

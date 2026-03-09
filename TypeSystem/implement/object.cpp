@@ -105,8 +105,30 @@ namespace Oblivia{
         }
     }
 
+    Object&Object::operator=(const Object&a){
+        type=Type::Object;
+        attributes.resize(a.attributes.size());
+        this->getIndex=a.getIndex;
+        for(int i=0;i<a.attributes.size();i++){
+            switch(a.attributes[i]->getType()){
+                case Type::Number:this->attributes[i]=std::make_unique<Attribute>(a.attributes[i]->name,*this,i,a.attributes[i]->as.Num());break;
+                case Type::Array:this->attributes[i]=std::make_unique<Attribute>(a.attributes[i]->name,*this,i,std::make_unique<Array>(a.attributes[i]->as.Arr()));break;
+                case Type::Object:this->attributes[i]=std::make_unique<Attribute>(a.attributes[i]->name,*this,i,std::make_unique<Object>(a.attributes[i]->as.Obj()));break;
+                case Type::String:this->attributes[i]=std::make_unique<Attribute>(a.attributes[i]->name,*this,i,std::make_unique<String>(a.attributes[i]->as.Str()));break;
+                case Type::Reference:this->attributes[i]=std::make_unique<Attribute>(a.attributes[i]->name,*this,i,std::make_unique<Reference>(a.attributes[i]->as.Ref()));break;
+            }
+        }
+        return*this;
+    }
+
     Attribute&Object::visitAttribute(const std::string&name){
         return *attributes[getIndex[name]];
+    }
+
+    void Object::addAttribute(const std::string&name){
+        int index=attributes.size();
+        attributes.push_back(std::make_unique<Attribute>(name,*this,index));
+        getIndex[name]=index;
     }
 
     void Object::addAttribute(const std::string&name,const Number&a){
@@ -166,5 +188,9 @@ namespace Oblivia{
             if(!(*(this->attributes[i])==*(a.attributes[i])))return Number(0);
         }
         return Number(1);
+    }
+
+    bool Object::attributeExist(const std::string&a){
+        return getIndex.contains(a);
     }
 }

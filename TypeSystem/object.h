@@ -45,7 +45,9 @@ namespace Oblivia{
         std::unordered_map<std::string,int>getIndex;
         Object();
         Object(const Object&a);
+        Object&operator=(const Object&a);
         Attribute&visitAttribute(const std::string&name);
+        void addAttribute(const std::string&name);
         void addAttribute(const std::string&name,const Number&a);
         void addAttribute(const std::string&name,const std::unique_ptr<Array>&a);
         void addAttribute(const std::string&name,const std::unique_ptr<Object>&a);
@@ -53,6 +55,7 @@ namespace Oblivia{
         void addAttribute(const std::string&name,const std::unique_ptr<Reference>&a);
         void print(std::ostream&os)const;
         Number operator==(const Object&a)const;
+        bool attributeExist(const std::string&a);
     };
 }
 

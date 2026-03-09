@@ -72,7 +72,7 @@ namespace Oblivia{
         std::string str;
         TokenType type;
         struct TokenValue{
-            std::variant<Number,Variable*,ArrayElement*,Attribute*,Operator,String,Object*,Array*,Reference*>v;
+            std::variant<Number,Variable*,ArrayElement*,Attribute*,Operator,String,Object,Array,Reference>v;
             Number&num();
             Variable&var();
             ArrayElement&ele();
@@ -94,7 +94,6 @@ namespace Oblivia{
             const Reference&ref()const;
         }as;
         Token();
-        ~Token();        
     };
 
     typedef std::vector<Token> Tokens;

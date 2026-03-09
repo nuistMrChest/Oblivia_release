@@ -29,9 +29,14 @@ namespace Oblivia{
         tmp.pop_back();
         tmp.erase(tmp.begin(),tmp.begin()+2);
         if(!tmp.empty()){
-            if(tmp[0].str!="="&&tmp[0].str!="#")return false;
-            tmp.erase(tmp.begin());
-            return isExpression(tmp);
+            if(tmp[0].str=="="||tmp[0].str=="#"){
+                tmp.erase(tmp.begin());
+                    return isExpression(tmp);
+            }
+            else if(tmp[0].type==TokenType::At){
+                return tmp.size()==1;
+            }
+            else return false;
         }
         return true;
     }
@@ -59,6 +64,11 @@ namespace Oblivia{
                     var->as.v=std::make_unique<Array>(getValueType(val.v,stack_level).Num().getSizeT());
                     break;
                 }
+                case Type::Object:{
+                    var->type=Type::Object;
+                    var->as.v=std::make_unique<Object>();
+                    break;
+                }
                 default:return Situation::NotAssigner;
             }
 
@@ -69,15 +79,16 @@ namespace Oblivia{
     Situation Let::build(){
         name=tokens[1].str;
         if(tokens.size()>3){
-            switch(toOperator(tokens[2].str)){
+            if(tokens[2].type==TokenType::Operator)switch(toOperator(tokens[2].str)){
                 case Operator::Assignment:val_ty=Type::Number;break;
                 case Operator::ElementIndexing:val_ty=Type::Array;break;
                 default:val_ty=Type::Null;
             }
+            else val_ty=Type::Object;
             Tokens tmp=tokens;
             tmp.erase(tmp.begin(),tmp.begin()+3);
             tmp.pop_back();
-            val=Expression(tmp,stack_level);
+            if(tokens[2].type==TokenType::Operator)val=Expression(tmp,stack_level);
         }
         return Situation::Test;
     }

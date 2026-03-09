@@ -295,15 +295,15 @@ namespace Oblivia{
     }
 
     Object&Token::TokenValue::obj(){
-        return*std::get<Object*>(v);
+        return std::get<Object>(v);
     }
 
     Array&Token::TokenValue::arr(){
-        return*std::get<Array*>(v);
+        return std::get<Array>(v);
     }
 
     Reference&Token::TokenValue::ref(){
-        return*std::get<Reference*>(v);
+        return std::get<Reference>(v);
     }
 
     const Number&Token::TokenValue::num()const{
@@ -331,30 +331,15 @@ namespace Oblivia{
     }
 
     const Object&Token::TokenValue::obj()const{
-        return*std::get<Object*>(v);
+        return std::get<Object>(v);
     }
 
     const Array&Token::TokenValue::arr()const{
-        return*std::get<Array*>(v);
+        return std::get<Array>(v);
     } 
     
     const Reference&Token::TokenValue::ref()const{
-        return*std::get<Reference*>(v);
-    }
-    
-    Token::~Token(){
-        if(type==TokenType::Object){
-            if(std::get<Object*>(as.v)!=nullptr){
-                delete std::get<Object*>(as.v);
-                std::get<Object*>(as.v)=nullptr;
-            }
-        }
-        if(type==TokenType::Array){
-            if(std::get<Array*>(as.v)!=nullptr){
-                delete std::get<Array*>(as.v);
-                std::get<Array*>(as.v)=nullptr;
-            }
-        }
+        return std::get<Reference>(v);
     }
  
     Situation createObject(Token&res,const Tokens&a){
@@ -366,31 +351,7 @@ namespace Oblivia{
     }
 
     Situation processLiteral(Tokens&r,const Tokens&a){
-        std::stack<Token>stk;
-        Tokens res;
-        std::stack<Token>tmp_li;
-        for(size_t i=0;i<a.size();i++){
-            if(stk.empty()&&!(a[i].type==TokenType::At||a[i].type==TokenType::Caret))res.push_back(a[i]);
-            if(a[i].type==TokenType::At||a[i].type==TokenType::Caret)stk.push(a[i]);
-            if(!stk.empty()&&a[i].str!="]")stk.push(a[i]);
-            if(a[i].str=="]"){
-                while(!tmp_li.empty())tmp_li.pop();
-                while(!stk.empty()&&stk.top().str!="["){
-                    tmp_li.push(stk.top());
-                    stk.pop();
-                }
-                if(!stk.empty())stk.pop();
-                if(stk.empty())return Situation::BadLiteral;
-                if(stk.top().type==TokenType::At){
-                    
-                }
-                else if(stk.top().type==TokenType::Caret){
-
-                }
-                else return Situation::BadLiteral;
-                stk.pop();
-            }
-        }
+        
         return Situation::Success;
     }
 }
