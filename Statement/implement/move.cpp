@@ -80,10 +80,10 @@ namespace Oblivia{
         if(ste!=Situation::Success)return ste;
         if(!isOwner(from.v,stack_level))return Situation::NotOwner;
         if(!isOwner(to.v,stack_level))return Situation::NotOwner;
-        ValueType&from_v=getValueTypeRef(from.v,stack_level);
-        Type&tf=getTypeRef(from.v,stack_level);
-        ValueType&to_v=getValueTypeRef(to.v,stack_level);
-        Type&tt=getTypeRef(to.v,stack_level);
+        ValueType&from_v=getTrueValueTypeRef(from.v,stack_level);
+        Type&tf=getTrueTypeRef(from.v,stack_level);
+        ValueType&to_v=getTrueValueTypeRef(to.v,stack_level);
+        Type&tt=getTrueTypeRef(to.v,stack_level);
         tt=tf;
         switch(tf){
             case Type::Number:to_v.v=std::move(from_v.Num());break;

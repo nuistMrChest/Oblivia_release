@@ -14,6 +14,10 @@ namespace Oblivia{
     ValueType&getValueTypeRef(Token&a,size_t level);
     Type getType(const Token&a,size_t level);
     Type&getTypeRef(Token&a,size_t level);
+    ValueType getTrueValueType(const Token&a,size_t level);
+    ValueType&getTrueValueTypeRef(Token&a,size_t level);
+    Type getTrueType(const Token&a,size_t level);
+    Type&getTrueTypeRef(Token&a,size_t level);
     class Expression{
         private:
         Tokens t;
