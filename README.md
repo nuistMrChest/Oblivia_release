@@ -22,8 +22,7 @@ Working components:
 -   `string`
 -   `array`
 -   `reference`
-
-> object syntax exist but are not implemented yet.
+-   `object`
 
 ------------------------------------------------------------------------
 
@@ -50,7 +49,7 @@ Working components:
 -   `/exit`
 -   `/list_variables`
 -   `/scope`
--   `/scopr_up`
+-   `/scope_up`
 -   `/scope_down`
 
 ------------------------------------------------------------------------

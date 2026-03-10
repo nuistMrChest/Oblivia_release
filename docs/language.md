@@ -1,13 +1,13 @@
 # Oblivia Programming Language
 
-## 1. Right Values
+## 1. Rvalues
 
 Currently, Oblivia provides five built-in types:
 
--   number\
--   string\
--   array\
--   reference\
+-   number
+-   string
+-   array
+-   reference
 -   object 
 
 ### 1.1 Number
@@ -72,10 +72,10 @@ Internally:
 
 ### 1.4 Object
 
-Objects are like dicts in pyhton. They are contiguous memory blocks,but indexed by identifier.
+Objects are like dicts in python. They are contiguous memory blocks, but indexed by identifier.
 
 -   Length can be changed by adding attributes.
--   Different attribute can store different types.
+-   Different attributes can store different types.
 -   Default value of each element is `0`.
 
 Example:
@@ -90,12 +90,12 @@ Example:
 
 ### 1.5 Reference
 
-Reference has no literal and can only be used in borrow statement.\
+Reference has no literal representation and can only be used in borrow statement.\
 It acts like what references do in c++.
 
 ------------------------------------------------------------------------
 
-## 2. Left Values
+## 2. Lvalues
 
 There are three reference types:
 
@@ -103,7 +103,7 @@ There are three reference types:
 -   array element\
 -   object attribute
 
-Right values must be stored in left values, otherwise they are literals.
+Rvalues must be stored in Lvalues, otherwise they are literals.
 
 ------------------------------------------------------------------------
 
@@ -124,13 +124,13 @@ Examples:
     let a;
     let b = 10;
 
-If initialized through borrow statement, all the calculation of it is the calculation of it's refered left value.
+If initialized through borrow statement, all the calculation of it is the calculation of its referred Lvalue.
 
 ------------------------------------------------------------------------
 
 ### 2.2 Array Element
 
-Array elements are left values inside arrays.
+Array elements are Lvalues inside arrays.
 
 Example:
 
@@ -141,7 +141,7 @@ Example:
 
 ### 2.3 Object Attribute
 
-Object attributes are left values inside objects.
+Object attributes are Lvalues inside objects.
 
 Example:
 
@@ -259,7 +259,7 @@ Examples:
     let b = 1 + 9;
     let c = "giao";
     let d[3];
-    let e[9];
+    let e@;
 
 ------------------------------------------------------------------------
 
@@ -335,9 +335,9 @@ Example:
 
     move expr_a,expr_b;
 
-The result of both `expr_a` and `expr_b` must be a left value.\
+The result of both `expr_a` and `expr_b` must be a Lvalue.\
 Value stored in the result pf `expr_a` moves to the result of `expr_b`, and replaced with number 0.\
-Although references behaves like whatever they are refered to in expressions, in move statements, moving a reference is literally move the reference it self, not the thing it refered to.
+Although references behave like whatever they are referred to in expressions, in move statements, moving a reference is literally move the reference itself, not the thing it referred to.
 
 ------------------------------------------------------------------------
 
@@ -345,7 +345,7 @@ Although references behaves like whatever they are refered to in expressions, in
 
     borrow expr,a;
 
-The result of `expr` must be a left value.\
+The result of `expr` must be a Lvalue.\
 Initialize a variable named `a` with a reference pointed towards the result of `expr`.
 
 ------------------------------------------------------------------------
@@ -355,8 +355,8 @@ Initialize a variable named `a` with a reference pointed towards the result of `
     include expr;
 
 The result of expr must be a string.\
-The string must be a legal path to an oblivia source file. Unlike the file that will be runned directly by the interpreter, the file included only need to be several legal oblivia statement.\
-The basic scope of the statements inside the included file is the scope level og the include statement.
+The string must be a legal path to an oblivia source file. Unlike the file that will be run directly by the interpreter, the file included only need to be several legal oblivia statement.\
+The basic scope of the statements inside the included file is the scope level of the include statement.
 
 ------------------------------------------------------------------------
 
