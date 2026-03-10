@@ -8,7 +8,7 @@ Currently, Oblivia provides five built-in types:
 -   string\
 -   array\
 -   reference\
--   object (not available yet)
+-   object 
 
 ### 1.1 Number
 
@@ -72,7 +72,19 @@ Internally:
 
 ### 1.4 Object
 
-Object type exists but is not implemented yet.
+Objects are like dicts in pyhton. They are contiguous memory blocks,but indexed by identifier.
+
+-   Length can be changed by adding attributes.
+-   Different attribute can store different types.
+-   Default value of each element is `0`.
+
+Example:
+
+    let a@;
+    a+=b;
+    a->b="giao";
+
+`->`is the attribute access operator.
 
 ------------------------------------------------------------------------
 
@@ -118,7 +130,7 @@ If initialized through borrow statement, all the calculation of it is the calcul
 
 ### 2.2 Array Element
 
-Array elements are references inside arrays.
+Array elements are left values inside arrays.
 
 Example:
 
@@ -129,7 +141,13 @@ Example:
 
 ### 2.3 Object Attribute
 
-Not available yet.
+Object attributes are left values inside objects.
+
+Example:
+
+    let a@;
+    a+=b;
+    a->b="giao";
 
 ------------------------------------------------------------------------
 
@@ -318,7 +336,8 @@ Example:
     move expr_a,expr_b;
 
 The result of both `expr_a` and `expr_b` must be a left value.\
-Value stored in the result pf `expr_a` moves to the result of `expr_b`, and replaced with number 0.
+Value stored in the result pf `expr_a` moves to the result of `expr_b`, and replaced with number 0.\
+Although references behaves like whatever they are refered to in expressions, in move statements, moving a reference is literally move the reference it self, not the thing it refered to.
 
 ------------------------------------------------------------------------
 
@@ -328,6 +347,16 @@ Value stored in the result pf `expr_a` moves to the result of `expr_b`, and repl
 
 The result of `expr` must be a left value.\
 Initialize a variable named `a` with a reference pointed towards the result of `expr`.
+
+------------------------------------------------------------------------
+
+### 4.14 Include
+
+    include expr;
+
+The result of expr must be a string.\
+The string must be a legal path to an oblivia source file. Unlike the file that will be runned directly by the interpreter, the file included only need to be several legal oblivia statement.\
+The basic scope of the statements inside the included file is the scope level og the include statement.
 
 ------------------------------------------------------------------------
 
@@ -344,6 +373,10 @@ Commands:
 
     /exit
     /help
+    /list_variables
+    /scope
+    /scope_up
+    /scope_down
 
 Statements are tokenized, checked, built, and executed.
 
@@ -351,7 +384,7 @@ Statements are tokenized, checked, built, and executed.
 
 ### 5.2 File Mode
 
-The entire file must be a legal statement.
+The entire main file must be a legal statement.
 
 Example:
 

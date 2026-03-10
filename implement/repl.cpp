@@ -35,7 +35,7 @@ namespace Oblivia{
     void REPL(){
         size_t scope_level=1;
         std::string input;
-        std::cout<<"Oblivia REPL v0.4.1"<<std::endl<<"By MrChest from NUIST"<<std::endl<<"Type \"/help\" for help\n";
+        std::cout<<"Oblivia REPL v0.5.0"<<std::endl<<"By MrChest from NUIST"<<std::endl<<"Type \"/help\" for help\n";
         while(1){
             std::cout<<">>";
             std::getline(std::cin,input);

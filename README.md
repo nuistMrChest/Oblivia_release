@@ -38,6 +38,7 @@ Working components:
 -   `execute`
 -   `borrow`
 -   `move`
+-   `include`
 -   block statements `{ ... }`
 -   expression statements
 
@@ -45,8 +46,12 @@ Working components:
 
 ## REPL Commands
 
--   `/help` (help system not implemented yet)
+-   `/help`
 -   `/exit`
+-   `/list_variables`
+-   `/scope`
+-   `/scopr_up`
+-   `/scope_down`
 
 ------------------------------------------------------------------------
 
