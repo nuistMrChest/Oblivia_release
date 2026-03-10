@@ -41,7 +41,7 @@ namespace Oblivia{
 
     Move::Move(){
         type=StatementType::Move;
-        stack_level=0;
+        scope_level=0;
         tokens=Tokens();
         from=Expression();
         to=Expression();
@@ -49,7 +49,7 @@ namespace Oblivia{
 
     Move::Move(size_t l,const Tokens&t){
         type=StatementType::Move;
-        stack_level=l;
+        scope_level=l;
         tokens=t;
         from=Expression();
         to=Expression();
@@ -66,24 +66,24 @@ namespace Oblivia{
             tf.push_back(tt[i]);
             i++;
         }
-        from=Expression(tf,stack_level);
+        from=Expression(tf,scope_level);
         tt.erase(tt.begin(),tt.begin()+i+1);
-        to=Expression(tt,stack_level);
+        to=Expression(tt,scope_level);
         return Situation::Success;
     }
 
-    Situation Move::execute(ExecuteResult&result){
+    Situation Move::execute(ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         Situation sfe=from.calculate();
         if(sfe!=Situation::Success)return sfe;
         Situation ste=to.calculate();
         if(ste!=Situation::Success)return ste;
-        if(!isOwner(from.v,stack_level))return Situation::NotOwner;
-        if(!isOwner(to.v,stack_level))return Situation::NotOwner;
-        ValueType&from_v=getTrueValueTypeRef(from.v,stack_level);
-        Type&tf=getTrueTypeRef(from.v,stack_level);
-        ValueType&to_v=getTrueValueTypeRef(to.v,stack_level);
-        Type&tt=getTrueTypeRef(to.v,stack_level);
+        if(!isOwner(from.v,scope_level))return Situation::NotOwner;
+        if(!isOwner(to.v,scope_level))return Situation::NotOwner;
+        ValueType&from_v=getTrueValueTypeRef(from.v,scope_level);
+        Type&tf=getTrueTypeRef(from.v,scope_level);
+        ValueType&to_v=getTrueValueTypeRef(to.v,scope_level);
+        Type&tt=getTrueTypeRef(to.v,scope_level);
         tt=tf;
         switch(tf){
             case Type::Number:to_v.v=std::move(from_v.Num());break;

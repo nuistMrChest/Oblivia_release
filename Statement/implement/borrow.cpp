@@ -16,7 +16,7 @@ namespace Oblivia{
 
     Borrow::Borrow(){
         type=StatementType::Borrow;
-        stack_level=0;
+        scope_level=0;
         tokens=Tokens();
         from=Expression();
         name="";
@@ -24,7 +24,7 @@ namespace Oblivia{
 
     Borrow::Borrow(size_t l,const Tokens&t){
         type=StatementType::Borrow;
-        stack_level=l;
+        scope_level=l;
         tokens=t;
         from=Expression();
         name="";
@@ -36,21 +36,21 @@ namespace Oblivia{
         Tokens tf=tokens;
         tf.erase(tf.begin());
         for(int i=0;i<3;i++)tf.pop_back();
-        from=Expression(tf,stack_level);
+        from=Expression(tf,scope_level);
         return Situation::Success;
     }
 
-    Situation Borrow::execute(ExecuteResult&result){
+    Situation Borrow::execute(ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         Situation sf=from.calculate();
         if(sf!=Situation::Success)return sf;
-        if(!isOwner(from.v,stack_level))return Situation::NotOwner;
-        ValueType&from_v=getValueTypeRef(from.v,stack_level);
-        Type&ft=getTypeRef(from.v,stack_level);
+        if(!isOwner(from.v,scope_level))return Situation::NotOwner;
+        ValueType&from_v=getValueTypeRef(from.v,scope_level);
+        Type&ft=getTypeRef(from.v,scope_level);
         for(auto i=Variable::variables.begin();i!=Variable::variables.end();i++){
-            if(i->first.level==stack_level&&i->first.name==name)return Situation::UsedIdentifier;
+            if(i->first.level==scope_level&&i->first.name==name)return Situation::UsedIdentifier;
         }
-        Variable*tmp=new Variable(stack_level,name,Reference(from_v,&ft));
+        Variable*tmp=new Variable(scope_level,name,Reference(from_v,&ft));
         return Situation::Success;
     }
 }

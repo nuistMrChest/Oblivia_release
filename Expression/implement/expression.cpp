@@ -77,7 +77,7 @@ namespace Oblivia{
         return true;
     }
 
-    Expression::Expression(const Tokens&a,size_t l):t(a),need_calculatable(false),stack_level(l){}
+    Expression::Expression(const Tokens&a,size_t l):t(a),need_calculatable(false),scope_level(l){}
 
     Expression::Expression():t(Tokens()),need_calculatable(false){}
 
@@ -85,14 +85,14 @@ namespace Oblivia{
         this->v=a.v;
         this->t=a.t;
         this->need_calculatable=a.need_calculatable;
-        this->stack_level=a.stack_level;
+        this->scope_level=a.scope_level;
     }
 
     const Expression&Expression::operator=(const Expression&a){
         this->v=a.v;
         this->t=a.t;
         this->need_calculatable=a.need_calculatable;
-        this->stack_level=a.stack_level;
+        this->scope_level=a.scope_level;
         return a;
     }
 
@@ -928,7 +928,7 @@ namespace Oblivia{
                     if(stk.empty())return Situation::FailedCalaulation;
                     Token right=stk.top();
                     stk.pop();
-                    si=operate(res,rev[i].as.ope(),right,stack_level);
+                    si=operate(res,rev[i].as.ope(),right,scope_level);
                     if(si==Situation::Success)stk.push(res);
                     else return si;
                 }
@@ -939,7 +939,7 @@ namespace Oblivia{
                     if(stk.empty())return Situation::FailedCalaulation;
                     Token left=stk.top();
                     stk.pop();
-                    si=operate(res,rev[i].as.ope(),left,right,stack_level);
+                    si=operate(res,rev[i].as.ope(),left,right,scope_level);
                     if(si==Situation::Success)stk.push(res);
                     else return si;
                 }
@@ -951,8 +951,8 @@ namespace Oblivia{
     }
 
     std::ostream&operator<<(std::ostream&os,const Expression&a){
-        ValueType val=getValueType(a.v,a.stack_level);
-        Type ty=getType(a.v,a.stack_level); 
+        ValueType val=getValueType(a.v,a.scope_level);
+        Type ty=getType(a.v,a.scope_level); 
       
         switch(ty){
             case Type::Array:{
@@ -982,7 +982,7 @@ namespace Oblivia{
     Situation Expression::getBool(bool&res){
         switch(v.type){
             case TokenType::Identifier:{
-                for(size_t i=stack_level;i>0;i--){
+                for(size_t i=scope_level;i>0;i--){
                     VarKey tmp(v.str,i);
                     if(Variable::variables.contains(tmp)&&Variable::variables[tmp]!=nullptr){
                         Variable&tmpV=*Variable::variables[tmp];

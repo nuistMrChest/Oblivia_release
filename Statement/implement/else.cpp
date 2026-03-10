@@ -5,7 +5,7 @@
 namespace Oblivia{
     Else::Else(){
         type=StatementType::Else;
-        stack_level=0;
+        scope_level=0;
         tokens=Tokens();
         linked=false;
         f=nullptr;
@@ -13,14 +13,14 @@ namespace Oblivia{
 
     Else::Else(size_t l,const Tokens&t){
         type=StatementType::Else;
-        stack_level=l;
+        scope_level=l;
         tokens=t;
         f=nullptr;
         linked=false;
         this->build();
     }
 
-    Situation Else::execute(ExecuteResult&result){
+    Situation Else::execute(ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         if(linked)f->execute(result);
         return Situation::Success;
@@ -37,6 +37,6 @@ namespace Oblivia{
     Situation Else::build(){
         Tokens tmp=tokens;
         tmp.erase(tmp.begin());
-        return buildStatement(f,stack_level+1,tmp);
+        return buildStatement(f,scope_level+1,tmp);
     }
 }

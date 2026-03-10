@@ -45,7 +45,8 @@ namespace Oblivia{
         UsedIdentifier,
 
         AttributeExist,
-        BadAttributeName
+        BadAttributeName,
+        BadPath
     };
 
     std::ostream&operator<<(std::ostream&os,const Situation&a);

@@ -43,6 +43,7 @@ set(OBLIVIA_SOURCES
     ./Statement/implement/execute.cpp
     ./Statement/implement/move.cpp
     ./Statement/implement/borrow.cpp
+    ./Statement/implement/include.cpp
 )
 
 # Windows only: add icon resource

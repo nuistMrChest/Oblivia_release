@@ -9,7 +9,11 @@ namespace Oblivia{
     enum class Command{
         Null,
         Exit,
-        Help
+        Help,
+        LiseVariables,
+        ScopeUp,
+        ScopeDown,
+        Scope
     };
     Command toCommand(const std::string&a);
     void REPL();

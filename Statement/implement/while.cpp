@@ -6,7 +6,7 @@
 namespace Oblivia{
     While::While(){
         type=StatementType::While;
-        stack_level=0;
+        scope_level=0;
         tokens=Tokens();
         d=nullptr;
         j=Expression();
@@ -14,7 +14,7 @@ namespace Oblivia{
 
     While::While(size_t l,const Tokens&t){
         type=StatementType::While;
-        stack_level=l;
+        scope_level=l;
         tokens=t;
         d=nullptr;
         j=Expression();
@@ -38,7 +38,7 @@ namespace Oblivia{
         return isStatement(sub);
     }
 
-    Situation While::execute(ExecuteResult&result){
+    Situation While::execute(ExecuteResult&result,bool included){
         ExecuteResult er;
         Situation es=j.calculate();
         if(es!=Situation::Success)return es;
@@ -61,9 +61,9 @@ namespace Oblivia{
             jt.push_back(tokens[i]);
             i++;
         }
-        j=Expression(jt,stack_level);
+        j=Expression(jt,scope_level);
         Tokens tmp=tokens;
         tmp.erase(tmp.begin(),tmp.begin()+i+1);
-        return buildStatement(d,stack_level+1,tmp);
+        return buildStatement(d,scope_level+1,tmp);
     }
 }

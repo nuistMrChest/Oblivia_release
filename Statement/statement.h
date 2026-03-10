@@ -34,7 +34,8 @@ namespace Oblivia{
         Continue,
         Execute,
         Borrow,
-        Move
+        Move,
+        Include
     };
 
     StatementType getStateType(const Tokens&a);
@@ -48,7 +49,7 @@ namespace Oblivia{
         Tokens tokens;
         public:
         StatementType type;
-        size_t stack_level;
+        size_t scope_level;
         
         Statement*e;
         
@@ -57,7 +58,7 @@ namespace Oblivia{
         bool have_else;
         
         Statement();
-        virtual Situation execute(ExecuteResult&result)=0;
+        virtual Situation execute(ExecuteResult&result,bool included=false)=0;
         virtual Situation build()=0;
         friend std::ostream&operator<<(std::ostream&os,const Statement&a);
     };
@@ -70,7 +71,7 @@ namespace Oblivia{
         public:
         Expr();
         Expr(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -82,7 +83,7 @@ namespace Oblivia{
         Type val_ty;
         Let();
         Let(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -93,7 +94,7 @@ namespace Oblivia{
         public:
         Print();
         Print(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -102,7 +103,7 @@ namespace Oblivia{
         public:
         Scan();
         Scan(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -115,7 +116,7 @@ namespace Oblivia{
 
         Block();
         Block(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -129,7 +130,7 @@ namespace Oblivia{
 
         If();
         If(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -140,7 +141,7 @@ namespace Oblivia{
         
         Else();
         Else(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -151,7 +152,7 @@ namespace Oblivia{
         Expression j;
         While();
         While(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -160,7 +161,7 @@ namespace Oblivia{
         public:
         Break();
         Break(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -169,7 +170,7 @@ namespace Oblivia{
         public:
         Continue();
         Continue(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -179,7 +180,7 @@ namespace Oblivia{
         std::string code;
         Execute();
         Execute(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -192,7 +193,7 @@ namespace Oblivia{
         Expression to;
         Move();
         Move(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };
@@ -203,7 +204,17 @@ namespace Oblivia{
         Expression from;
         Borrow();
         Borrow(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result);
+        Situation execute(ExecuteResult&result,bool included=false);
+        static bool isLegal(const Tokens&t);
+        Situation build();
+    };
+
+    class Include:public Statement{
+        public:
+        Expression pe;
+        Include();
+        Include(size_t,const Tokens&t);
+        Situation execute(ExecuteResult&result,bool included=false);
         static bool isLegal(const Tokens&t);
         Situation build();
     };

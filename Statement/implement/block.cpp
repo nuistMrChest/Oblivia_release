@@ -6,20 +6,20 @@
 
 namespace Oblivia{
     Block::Block(){
-        stack_level=0;
+        scope_level=0;
         type=StatementType::Block;
         tokens=Tokens();
         subStates=std::vector<std::unique_ptr<Statement>>();
     }
 
     Block::Block(size_t l,const Tokens&t){
-        stack_level=l;
+        scope_level=l;
         type=StatementType::Block;
         tokens=t;
         this->build();
     }
 
-    Situation Block::execute(ExecuteResult&result){
+    Situation Block::execute(ExecuteResult&result,bool included){
         for(int i=0;i<subStates.size();i++){
             if(subStates[i]->type==StatementType::Else)continue;
             Situation tmp=subStates[i].get()->execute(result);
@@ -33,8 +33,8 @@ namespace Oblivia{
                 std::cout<<*subStates[i].get()<<std::endl;
             }
         }
-        for(auto i=Variable::variables.begin();i!=Variable::variables.end();i++){
-            if(i->first.level==this->stack_level+1){
+        if(!included)for(auto i=Variable::variables.begin();i!=Variable::variables.end();i++){
+            if(i->first.level==this->scope_level+1){
                 delete i->second;
                 i->second=nullptr;
             }
@@ -74,7 +74,7 @@ namespace Oblivia{
                 if((t[i].type==TokenType::SemiColon||t[i].str=="}")&&braceCnt==0){
                     if(isStatement(tmp)){
                         std::unique_ptr<Statement>tmpS;
-                        Situation sit=buildStatement(tmpS,stack_level+1,tmp);
+                        Situation sit=buildStatement(tmpS,scope_level+1,tmp);
                         if(sit==Situation::Success)subStates.push_back(std::move(tmpS));
                         else return sit;
                         tmp.clear();

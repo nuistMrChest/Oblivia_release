@@ -24,7 +24,8 @@ namespace Oblivia{
         "break",
         "continue",
         "borrow",
-        "move"
+        "move",
+        "include"
     };
 
     enum class TokenType{

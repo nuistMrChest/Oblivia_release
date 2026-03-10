@@ -5,7 +5,7 @@
 namespace Oblivia{
     If::If(){
         e=nullptr;
-        stack_level=0;
+        scope_level=0;
         type=StatementType::If;
         tokens=Tokens();
         t=nullptr;
@@ -15,7 +15,7 @@ namespace Oblivia{
 
     If::If(size_t l,const Tokens&to){
         e=nullptr;
-        stack_level=l;
+        scope_level=l;
         tokens=to;
         t=nullptr;
         type=StatementType::If;
@@ -41,7 +41,7 @@ namespace Oblivia{
         return isStatement(subState);
     }
 
-    Situation If::execute(ExecuteResult&result){
+    Situation If::execute(ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         Situation es=j.calculate();
         if(es!=Situation::Success)return es;
@@ -60,10 +60,10 @@ namespace Oblivia{
             je.push_back(tokens[i]);
             i++;
         }
-        j=Expression(je,stack_level);
+        j=Expression(je,scope_level);
         Tokens subState=tokens;
         subState.erase(subState.begin(),subState.begin()+i+1);
-        Situation sit=buildStatement(t,stack_level+1,subState);
+        Situation sit=buildStatement(t,scope_level+1,subState);
         return sit;
     }
 }

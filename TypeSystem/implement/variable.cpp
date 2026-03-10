@@ -99,42 +99,42 @@ namespace Oblivia{
         return std::hash<std::string>()(a.name)^(std::hash<size_t>()(a.level)<<1);
     }
 
-    Variable::Variable(size_t l,const std::string&n):name(n),stack_level(l){
+    Variable::Variable(size_t l,const std::string&n):name(n),scope_level(l){
         type=Type::Number;
         as.v=Number(0);
         calculatable=true;
         variables[VarKey(n,l)]=this;
     }
 
-    Variable::Variable(size_t l,const std::string&n,const Number&v):name(n),stack_level(l){
+    Variable::Variable(size_t l,const std::string&n,const Number&v):name(n),scope_level(l){
         as.v=v;
         type=Type::Number;
         calculatable=true;
         variables[VarKey(n,l)]=this;
     }
 
-    Variable::Variable(size_t l,const std::string&n,const Array&v):name(n),stack_level(l){
+    Variable::Variable(size_t l,const std::string&n,const Array&v):name(n),scope_level(l){
         as.v=std::make_unique<Array>(v);
         type=Type::Array;
         calculatable=false;
         variables[VarKey(n,l)]=this;
     }
 
-    Variable::Variable(size_t l,const std::string&n,const Object&v):name(n),stack_level(l){
+    Variable::Variable(size_t l,const std::string&n,const Object&v):name(n),scope_level(l){
         as.v=std::make_unique<Object>(v);
         type=Type::Object;
         calculatable=false;
         variables[VarKey(n,l)]=this;
     }
 
-    Variable::Variable(size_t l,const std::string&n,const String&v):name(n),stack_level(l){
+    Variable::Variable(size_t l,const std::string&n,const String&v):name(n),scope_level(l){
         as.v=std::make_unique<String>(v);
         type=Type::String;
         calculatable=false;
         variables[VarKey(n,l)]=this;
     }
 
-    Variable::Variable(size_t l,const std::string&n,const Reference&v):name(n),stack_level(l){
+    Variable::Variable(size_t l,const std::string&n,const Reference&v):name(n),scope_level(l){
         as.v=std::make_unique<Reference>(v);
         type=Type::Reference;
         calculatable=v.calculatable;

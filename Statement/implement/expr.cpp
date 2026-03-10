@@ -5,14 +5,14 @@
 namespace Oblivia{
     Expr::Expr(){
         type=StatementType::Expr;
-        stack_level=0;
+        scope_level=0;
         tokens=Tokens();
         e=Expression();
     }
 
     Expr::Expr(size_t l,const Tokens&t){
         type=StatementType::Expr;
-        stack_level=l;
+        scope_level=l;
         tokens=t;
         e=Expression();
         this->build();
@@ -25,7 +25,7 @@ namespace Oblivia{
         return isExpression(tmp);
     }
 
-    Situation Expr::execute(ExecuteResult&result){
+    Situation Expr::execute(ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         return e.calculate();
     }
@@ -33,7 +33,7 @@ namespace Oblivia{
     Situation Expr::build(){
         Tokens t=tokens;
         t.pop_back();
-        e=Expression(t,stack_level);
+        e=Expression(t,scope_level);
         return Situation::Success;
     }
 }

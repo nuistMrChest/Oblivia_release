@@ -38,6 +38,7 @@ namespace Oblivia{
             case Situation::UsedIdentifier:os<<"UsedIdentifier";break;
             case Situation::AttributeExist:os<<"AttributeExist";break;
             case Situation::BadAttributeName:os<<"BadAttributeName";break;
+            case Situation::BadPath:os<<"BadPath";break;
         }
         return os;
     }

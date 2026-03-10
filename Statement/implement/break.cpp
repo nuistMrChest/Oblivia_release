@@ -5,13 +5,13 @@
 namespace Oblivia{
     Break::Break(){
         type=StatementType::Break;
-        stack_level=0;
+        scope_level=0;
         tokens=Tokens();
     }
 
     Break::Break(size_t l,const Tokens&t){
         type=StatementType::Break;
-        stack_level=l;
+        scope_level=l;
         tokens=t;
     }
 
@@ -22,7 +22,7 @@ namespace Oblivia{
         return true;
     }
 
-    Situation Break::execute(ExecuteResult&result){
+    Situation Break::execute(ExecuteResult&result,bool included){
         result=ExecuteResult::EndLoop;
         return Situation::Success;
     }

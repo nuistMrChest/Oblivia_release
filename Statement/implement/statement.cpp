@@ -20,11 +20,12 @@ namespace Oblivia{
             case StatementType::Execute:os<<"Execute";break;
             case StatementType::Move:os<<"Move";break;
             case StatementType::Borrow:os<<"Borrow";break;
+            case StatementType::Include:os<<"Include";break;
         }
         return os;
     }
 
-    Statement::Statement():stack_level(0){
+    Statement::Statement():scope_level(0){
         type=StatementType::Null;
     }
 
@@ -43,6 +44,7 @@ namespace Oblivia{
         else if(a[0].str=="execute")return StatementType::Execute;
         else if(a[0].str=="move")return StatementType::Move;
         else if(a[0].str=="borrow")return StatementType::Borrow;
+        else if(a[0].str=="include")return StatementType::Include;
         else return StatementType::Expr;
     }
 
@@ -72,6 +74,7 @@ namespace Oblivia{
             case StatementType::Execute:r=std::make_unique<Execute>(l,t);break;
             case StatementType::Move:r=std::make_unique<Move>(l,t);break;
             case StatementType::Borrow:r=std::make_unique<Borrow>(l,t);break;
+            case StatementType::Include:r=std::make_unique<Include>(l,t);break;
             default:return Situation::Success;
         }
         return Situation::Success;
@@ -91,7 +94,8 @@ namespace Oblivia{
             Continue::isLegal(t)||
             Execute::isLegal(t)||
             Move::isLegal(t)||
-            Borrow::isLegal(t)
+            Borrow::isLegal(t)||
+            Include::isLegal(t)
             // Fn::isLegal(t)
         );
     }

@@ -18,13 +18,14 @@ namespace Oblivia{
     ValueType&getTrueValueTypeRef(Token&a,size_t level);
     Type getTrueType(const Token&a,size_t level);
     Type&getTrueTypeRef(Token&a,size_t level);
+    String getString(const Token&a,size_t level);
     class Expression{
         private:
         Tokens t;
         bool need_calculatable;
         public:
         Token v;
-        size_t stack_level;
+        size_t scope_level;
         Expression(const Tokens&a,size_t l);
 
         Expression();

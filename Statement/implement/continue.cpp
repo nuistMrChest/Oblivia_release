@@ -5,13 +5,13 @@
 namespace Oblivia{
     Continue::Continue(){
         type=StatementType::Continue;
-        stack_level=0;
+        scope_level=0;
         tokens=Tokens();
     }
 
     Continue::Continue(size_t l,const Tokens&t){
         type=StatementType::Continue;
-        stack_level=l;
+        scope_level=l;
         tokens=t;
     }
 
@@ -22,7 +22,7 @@ namespace Oblivia{
         return true;
     }
 
-    Situation Continue::execute(ExecuteResult&result){
+    Situation Continue::execute(ExecuteResult&result,bool included){
         result=ExecuteResult::ContinueLoop;
         return Situation::Success;
     }

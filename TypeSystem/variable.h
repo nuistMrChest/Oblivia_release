@@ -66,7 +66,7 @@ namespace Oblivia{
     class Variable:public Calculatable{
         private:
         std::string name;
-        size_t stack_level;
+        size_t scope_level;
         public:
         Type type;
         ValueType as;

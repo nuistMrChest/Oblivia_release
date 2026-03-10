@@ -6,14 +6,14 @@
 namespace Oblivia{
     Print::Print(){
         type=StatementType::Print;
-        stack_level=0;
+        scope_level=0;
         tokens=Tokens();
         e=Expression();
     }
 
     Print::Print(size_t l,const Tokens&t){
         type=StatementType::Print;
-        stack_level=l;
+        scope_level=l;
         tokens=t;
         e=Expression();
         this->build();
@@ -29,7 +29,7 @@ namespace Oblivia{
         return isExpression(tmp);
     }
 
-    Situation Print::execute(ExecuteResult&result){
+    Situation Print::execute(ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         Situation si=e.calculate();
         if(si!=Situation::Success)return si;
@@ -41,7 +41,7 @@ namespace Oblivia{
         Tokens tmp=tokens;
         tmp.pop_back();
         tmp.erase(tmp.begin());
-        e=Expression(tmp,stack_level); 
+        e=Expression(tmp,scope_level); 
         return Situation::Success;
     }
 }
