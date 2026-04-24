@@ -4,96 +4,128 @@ CXX=c++
 CXXFLAGS=-O2 -std=c++23
 OBJS=$(OBJ)repl.o $(OBJ)interpreter.o $(OBJ)situation.o $(OBJ)string.o $(OBJ)array.o $(OBJ)number.o $(OBJ)object.o $(OBJ)value.o $(OBJ)variable.o $(OBJ)operator.o $(OBJ)reference.o $(OBJ)checker.o $(OBJ)tokenize.o $(OBJ)expression.o $(OBJ)block.o $(OBJ)break.o $(OBJ)continue.o $(OBJ)else.o $(OBJ)expr.o $(OBJ)if.o $(OBJ)let.o $(OBJ)print.o $(OBJ)scan.o $(OBJ)statement.o $(OBJ)while.o $(OBJ)execute.o $(OBJ)move.o $(OBJ)borrow.o $(OBJ)include.o $(OBJ)main.o
 
+EXPRESSION=Expression/expression.h Tokenize/tokenize.h TypeSystem/type_system.h TypeSystem/array.h TypeSystem/value.h TypeSystem/variable.h TypeSystem/number.h TypeSystem/object.h TypeSystem/operator.h TypeSystem/string.h TypeSystem/reference.h Situation/situation.h
+
+SITUATION=Situation/situation.h
+
+STATEMENT=Statement/statement.h Situation/situation.h Expression/expression.h Tokenize/tokenize.h TypeSystem/type_system.h TypeSystem/array.h TypeSystem/value.h TypeSystem/variable.h TypeSystem/number.h TypeSystem/object.h TypeSystem/operator.h TypeSystem/string.h TypeSystem/reference.h
+
+CHECKER=Tokenize/checker.h
+
+TOKENIZE=Tokenize/tokenize.h TypeSystem/type_system.h TypeSystem/array.h TypeSystem/value.h TypeSystem/variable.h TypeSystem/number.h TypeSystem/object.h TypeSystem/operator.h TypeSystem/string.h TypeSystem/reference.h Situation/situation.h
+
+ARRAY=TypeSystem/array.h TypeSystem/value.h TypeSystem/variable.h TypeSystem/number.h
+
+NUMBER=TypeSystem/number.h TypeSystem/value.h
+
+OBJECT=TypeSystem/object.h TypeSystem/value.h TypeSystem/number.h TypeSystem/variable.h
+
+OPERATOR=TypeSystem/operator.h
+
+REFERENCE=TypeSystem/reference.h TypeSystem/value.h TypeSystem/number.h
+
+STRING=TypeSystem/string.h TypeSystem/value.h TypeSystem/number.h
+
+TYPE=TypeSystem/type_system.h TypeSystem/array.h TypeSystem/value.h TypeSystem/variable.h TypeSystem/number.h TypeSystem/object.h TypeSystem/operator.h TypeSystem/string.h TypeSystem/reference.h
+
+VALUE=TypeSystem/value.h
+
+VARIABLE=TypeSystem/variable.h TypeSystem/value.h TypeSystem/number.h
+
+INTERPRETER=interpreter.h
+
+REPL=repl.h
+
 $(TARGET):$(OBJS)
 	$(CXX) $(OBJS) -o $(TARGET)
 
-$(OBJ)repl.o:implement/repl.cpp
+$(OBJ)repl.o:implement/repl.cpp $(REPL) $(TYPE) $(TOKENIZE) $(STATEMENT) $(SITUATION) $(EXPRESSION)
 	mkdir -p $(OBJ)
 	$(CXX) $(CXXFLAGS) -c implement/repl.cpp -o $(OBJ)repl.o
 
-$(OBJ)interpreter.o:implement/interpreter.cpp
+$(OBJ)interpreter.o:implement/interpreter.cpp $(INTERPRETER) $(TYPE) $(TOKENIZE) $(STATEMENT) $(SITUATION) $(EXPRESSION)
 	$(CXX) $(CXXFLAGS) -c implement/interpreter.cpp -o $(OBJ)interpreter.o
 
-$(OBJ)situation.o:Situation/implement/situation.cpp
+$(OBJ)situation.o:Situation/implement/situation.cpp $(SITUATION)
 	$(CXX) $(CXXFLAGS) -c Situation/implement/situation.cpp -o $(OBJ)situation.o
 
-$(OBJ)string.o:TypeSystem/implement/string.cpp
+$(OBJ)string.o:TypeSystem/implement/string.cpp $(STRING)
 	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/string.cpp -o $(OBJ)string.o
 
-$(OBJ)array.o:TypeSystem/implement/array.cpp
+$(OBJ)array.o:TypeSystem/implement/array.cpp $(ARRAY) $(VALUE) $(STRING) $(OBJECT) $(REFERENCE)
 	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/array.cpp -o $(OBJ)array.o
 
-$(OBJ)number.o:TypeSystem/implement/number.cpp
+$(OBJ)number.o:TypeSystem/implement/number.cpp $(NUMBER)
 	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/number.cpp -o $(OBJ)number.o
 
-$(OBJ)object.o:TypeSystem/implement/object.cpp
+$(OBJ)object.o:TypeSystem/implement/object.cpp $(OBJECT) $(VALUE) $(NUMBER) $(ARRAY) $(STRING) $(REFERENCE)
 	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/object.cpp -o $(OBJ)object.o
 
-$(OBJ)value.o:TypeSystem/implement/value.cpp
+$(OBJ)value.o:TypeSystem/implement/value.cpp $(VALUE)
 	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/value.cpp -o $(OBJ)value.o
 
-$(OBJ)variable.o:TypeSystem/implement/variable.cpp
+$(OBJ)variable.o:TypeSystem/implement/variable.cpp $(VARIABLE) $(VALUE) $(NUMBER) $(ARRAY) $(OBJECT) $(STRING) $(REFERENCE)
 	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/variable.cpp -o $(OBJ)variable.o
 
-$(OBJ)operator.o:TypeSystem/implement/operator.cpp
+$(OBJ)operator.o:TypeSystem/implement/operator.cpp $(OPERATOR)
 	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/operator.cpp -o $(OBJ)operator.o
 
-$(OBJ)reference.o:TypeSystem/implement/reference.cpp
+$(OBJ)reference.o:TypeSystem/implement/reference.cpp $(VARIABLE) $(REFERENCE) $(ARRAY) $(OBJECT) $(STRING) $(NUMBER)
 	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/reference.cpp -o $(OBJ)reference.o
 
-$(OBJ)checker.o:Tokenize/implement/checker.cpp
+$(OBJ)checker.o:Tokenize/implement/checker.cpp $(CHECKER) $(TOKENIZE)
 	$(CXX) $(CXXFLAGS) -c Tokenize/implement/checker.cpp -o $(OBJ)checker.o
 
-$(OBJ)tokenize.o:Tokenize/implement/tokenize.cpp
+$(OBJ)tokenize.o:Tokenize/implement/tokenize.cpp $(TOKENIZE) $(CHECKER)
 	$(CXX) $(CXXFLAGS) -c Tokenize/implement/tokenize.cpp -o $(OBJ)tokenize.o
 
-$(OBJ)expression.o:Expression/implement/expression.cpp
+$(OBJ)expression.o:Expression/implement/expression.cpp $(EXPRESSION) $(TOKENIZE) $(TYPE)
 	$(CXX) $(CXXFLAGS) -c Expression/implement/expression.cpp -o $(OBJ)expression.o
 
-$(OBJ)block.o:Statement/implement/block.cpp
+$(OBJ)block.o:Statement/implement/block.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/block.cpp -o $(OBJ)block.o
 
-$(OBJ)break.o:Statement/implement/break.cpp
+$(OBJ)break.o:Statement/implement/break.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/break.cpp -o $(OBJ)break.o
 
-$(OBJ)continue.o:Statement/implement/continue.cpp
+$(OBJ)continue.o:Statement/implement/continue.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/continue.cpp -o $(OBJ)continue.o
 
-$(OBJ)else.o:Statement/implement/else.cpp
+$(OBJ)else.o:Statement/implement/else.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/else.cpp -o $(OBJ)else.o
 
-$(OBJ)expr.o:Statement/implement/expr.cpp
+$(OBJ)expr.o:Statement/implement/expr.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/expr.cpp -o $(OBJ)expr.o
 
-$(OBJ)if.o:Statement/implement/if.cpp
+$(OBJ)if.o:Statement/implement/if.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/if.cpp -o $(OBJ)if.o
 
-$(OBJ)let.o:Statement/implement/let.cpp
+$(OBJ)let.o:Statement/implement/let.cpp $(STATEMENT) $(CHECKER)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/let.cpp -o $(OBJ)let.o
 
-$(OBJ)print.o:Statement/implement/print.cpp
+$(OBJ)print.o:Statement/implement/print.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/print.cpp -o $(OBJ)print.o
 
-$(OBJ)scan.o:Statement/implement/scan.cpp
+$(OBJ)scan.o:Statement/implement/scan.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/scan.cpp -o $(OBJ)scan.o
 
-$(OBJ)statement.o:Statement/implement/statement.cpp
+$(OBJ)statement.o:Statement/implement/statement.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/statement.cpp -o $(OBJ)statement.o
 
-$(OBJ)while.o:Statement/implement/while.cpp
+$(OBJ)while.o:Statement/implement/while.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/while.cpp -o $(OBJ)while.o
 
-$(OBJ)execute.o:Statement/implement/execute.cpp
+$(OBJ)execute.o:Statement/implement/execute.cpp $(STATEMENT) $(TOKENIZE) $(EXPRESSION)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/execute.cpp -o $(OBJ)execute.o
 
-$(OBJ)move.o:Statement/implement/move.cpp
+$(OBJ)move.o:Statement/implement/move.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/move.cpp -o $(OBJ)move.o
 
-$(OBJ)borrow.o:Statement/implement/borrow.cpp
+$(OBJ)borrow.o:Statement/implement/borrow.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/borrow.cpp -o $(OBJ)borrow.o
 
-$(OBJ)include.o:Statement/implement/include.cpp
+$(OBJ)include.o:Statement/implement/include.cpp $(STATEMENT)
 	$(CXX) $(CXXFLAGS) -c Statement/implement/include.cpp -o $(OBJ)include.o
 
-$(OBJ)main.o:main.cpp
+$(OBJ)main.o:main.cpp $(TYPE) $(TOKENIZE) $(SITUATION) $(STATEMENT) $(EXPRESSION) $(REPL) $(INTERPRETER)
 	$(CXX) $(CXXFLAGS) -c main.cpp -o $(OBJ)main.o
