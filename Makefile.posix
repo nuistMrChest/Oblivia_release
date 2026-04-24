@@ -1,0 +1,99 @@
+TARGET=build/oblivia
+OBJ=build/obj/
+CXX=c++
+CXXFLAGS=-O2 -std=c++23
+OBJS=$(OBJ)repl.o $(OBJ)interpreter.o $(OBJ)situation.o $(OBJ)string.o $(OBJ)array.o $(OBJ)number.o $(OBJ)object.o $(OBJ)value.o $(OBJ)variable.o $(OBJ)operator.o $(OBJ)reference.o $(OBJ)checker.o $(OBJ)tokenize.o $(OBJ)expression.o $(OBJ)block.o $(OBJ)break.o $(OBJ)continue.o $(OBJ)else.o $(OBJ)expr.o $(OBJ)if.o $(OBJ)let.o $(OBJ)print.o $(OBJ)scan.o $(OBJ)statement.o $(OBJ)while.o $(OBJ)execute.o $(OBJ)move.o $(OBJ)borrow.o $(OBJ)include.o $(OBJ)main.o
+
+$(TARGET):$(OBJS)
+	$(CXX) $(OBJS) -o $(TARGET)
+
+$(OBJ)repl.o:implement/repl.cpp
+	mkdir -p $(OBJ)
+	$(CXX) $(CXXFLAGS) -c implement/repl.cpp -o $(OBJ)repl.o
+
+$(OBJ)interpreter.o:implement/interpreter.cpp
+	$(CXX) $(CXXFLAGS) -c implement/interpreter.cpp -o $(OBJ)interpreter.o
+
+$(OBJ)situation.o:Situation/implement/situation.cpp
+	$(CXX) $(CXXFLAGS) -c Situation/implement/situation.cpp -o $(OBJ)situation.o
+
+$(OBJ)string.o:TypeSystem/implement/string.cpp
+	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/string.cpp -o $(OBJ)string.o
+
+$(OBJ)array.o:TypeSystem/implement/array.cpp
+	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/array.cpp -o $(OBJ)array.o
+
+$(OBJ)number.o:TypeSystem/implement/number.cpp
+	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/number.cpp -o $(OBJ)number.o
+
+$(OBJ)object.o:TypeSystem/implement/object.cpp
+	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/object.cpp -o $(OBJ)object.o
+
+$(OBJ)value.o:TypeSystem/implement/value.cpp
+	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/value.cpp -o $(OBJ)value.o
+
+$(OBJ)variable.o:TypeSystem/implement/variable.cpp
+	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/variable.cpp -o $(OBJ)variable.o
+
+$(OBJ)operator.o:TypeSystem/implement/operator.cpp
+	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/operator.cpp -o $(OBJ)operator.o
+
+$(OBJ)reference.o:TypeSystem/implement/reference.cpp
+	$(CXX) $(CXXFLAGS) -c TypeSystem/implement/reference.cpp -o $(OBJ)reference.o
+
+$(OBJ)checker.o:Tokenize/implement/checker.cpp
+	$(CXX) $(CXXFLAGS) -c Tokenize/implement/checker.cpp -o $(OBJ)checker.o
+
+$(OBJ)tokenize.o:Tokenize/implement/tokenize.cpp
+	$(CXX) $(CXXFLAGS) -c Tokenize/implement/tokenize.cpp -o $(OBJ)tokenize.o
+
+$(OBJ)expression.o:Expression/implement/expression.cpp
+	$(CXX) $(CXXFLAGS) -c Expression/implement/expression.cpp -o $(OBJ)expression.o
+
+$(OBJ)block.o:Statement/implement/block.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/block.cpp -o $(OBJ)block.o
+
+$(OBJ)break.o:Statement/implement/break.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/break.cpp -o $(OBJ)break.o
+
+$(OBJ)continue.o:Statement/implement/continue.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/continue.cpp -o $(OBJ)continue.o
+
+$(OBJ)else.o:Statement/implement/else.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/else.cpp -o $(OBJ)else.o
+
+$(OBJ)expr.o:Statement/implement/expr.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/expr.cpp -o $(OBJ)expr.o
+
+$(OBJ)if.o:Statement/implement/if.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/if.cpp -o $(OBJ)if.o
+
+$(OBJ)let.o:Statement/implement/let.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/let.cpp -o $(OBJ)let.o
+
+$(OBJ)print.o:Statement/implement/print.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/print.cpp -o $(OBJ)print.o
+
+$(OBJ)scan.o:Statement/implement/scan.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/scan.cpp -o $(OBJ)scan.o
+
+$(OBJ)statement.o:Statement/implement/statement.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/statement.cpp -o $(OBJ)statement.o
+
+$(OBJ)while.o:Statement/implement/while.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/while.cpp -o $(OBJ)while.o
+
+$(OBJ)execute.o:Statement/implement/execute.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/execute.cpp -o $(OBJ)execute.o
+
+$(OBJ)move.o:Statement/implement/move.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/move.cpp -o $(OBJ)move.o
+
+$(OBJ)borrow.o:Statement/implement/borrow.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/borrow.cpp -o $(OBJ)borrow.o
+
+$(OBJ)include.o:Statement/implement/include.cpp
+	$(CXX) $(CXXFLAGS) -c Statement/implement/include.cpp -o $(OBJ)include.o
+
+$(OBJ)main.o:main.cpp
+	$(CXX) $(CXXFLAGS) -c main.cpp -o $(OBJ)main.o

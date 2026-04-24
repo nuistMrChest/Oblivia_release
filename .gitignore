@@ -3,3 +3,7 @@ build_linux/
 build_windows/
 build_test/
 build_macos/
+
+compile_commands.json
+
+.vscode/
