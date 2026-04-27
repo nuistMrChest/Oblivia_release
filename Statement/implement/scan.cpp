@@ -26,7 +26,7 @@ namespace Oblivia{
         return isExpression(tmp);
     }
 
-    Situation Scan::execute(ExecuteResult&result,bool included){
+    Situation Scan::execute(Expression&ret,ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         Tokens tmp=tokens;
         tmp.pop_back();

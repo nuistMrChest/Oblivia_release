@@ -6,28 +6,28 @@
 #include<iostream>
 
 namespace Oblivia{
-    enum class Type{
-        Null,
+	enum class Type{
+		Null,
 
-        Number,
-        Array,
-        Function,
-        Object,
-        String,
-        Reference
-    };
+		Number,
+		Array,
+		Function,
+		Object,
+		String,
+		Reference,
+	};
 
-    std::ostream&operator<<(std::ostream&os,const Type&a);
+	std::ostream&operator<<(std::ostream&os,const Type&a);
 
-    class Value{
-        protected:
-        Type type;
-        public:
-        Type getType()const;
-        virtual void print(std::ostream&os)const=0;
-    };
+	class Value{
+		protected:
+		Type type;
+		public:
+		Type getType()const;
+		virtual void print(std::ostream&os)const=0;
+	};
 
-    std::ostream&operator<<(std::ostream&os,const Value&a);
+	std::ostream&operator<<(std::ostream&os,const Value&a);
 }
 
 #endif

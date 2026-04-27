@@ -72,7 +72,7 @@ namespace Oblivia{
         return Situation::Success;
     }
 
-    Situation Move::execute(ExecuteResult&result,bool included){
+    Situation Move::execute(Expression&ret,ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         Situation sfe=from.calculate();
         if(sfe!=Situation::Success)return sfe;

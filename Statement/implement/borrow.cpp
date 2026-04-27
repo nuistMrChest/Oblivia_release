@@ -40,7 +40,7 @@ namespace Oblivia{
         return Situation::Success;
     }
 
-    Situation Borrow::execute(ExecuteResult&result,bool included){
+    Situation Borrow::execute(Expression&ret,ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         Situation sf=from.calculate();
         if(sf!=Situation::Success)return sf;

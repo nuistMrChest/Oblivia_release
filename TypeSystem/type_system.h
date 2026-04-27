@@ -11,5 +11,6 @@
 #include"operator.h"
 #include"string.h"
 #include"reference.h"
+#include"function.h"
 
 #endif

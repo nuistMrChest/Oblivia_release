@@ -12,221 +12,249 @@
 #include<vector>
 
 namespace Oblivia{
-    enum class ExecuteResult{
-        Other,
+	enum class ExecuteResult{
+		Other,
 
-        EndLoop,
-        ContinueLoop
-    };
+		EndLoop,
+		ContinueLoop,
 
-    enum class StatementType{
-        Null,
-        Expr,
-        Let,
-        Print,
-        Scan,
-        If,
-        Else,
-        While,
-        Block,
-        Fn,
-        Break,
-        Continue,
-        Execute,
-        Borrow,
-        Move,
-        Include
-    };
+		Return
+	};
 
-    StatementType getStateType(const Tokens&a);
+	enum class StatementType{
+		Null,
+		Expr,
+		Let,
+		Print,
+		Scan,
+		If,
+		Else,
+		While,
+		Block,
+		IFn,
+		Break,
+		Continue,
+		Execute,
+		Borrow,
+		Move,
+		Include,
+		Return
+	};
 
-    std::ostream&operator<<(std::ostream&os,const StatementType&a);
+	StatementType getStateType(const Tokens&a);
 
-    bool isStatement(const Tokens&t);
+	std::ostream&operator<<(std::ostream&os,const StatementType&a);
 
-    class Statement{
-        protected:
-        Tokens tokens;
-        public:
-        StatementType type;
-        size_t scope_level;
-        
-        Statement*e;
-        
-        bool linked;
-        
-        bool have_else;
-        
-        Statement();
-        virtual Situation execute(ExecuteResult&result,bool included=false)=0;
-        virtual Situation build()=0;
-        friend std::ostream&operator<<(std::ostream&os,const Statement&a);
-    };
+	bool isStatement(const Tokens&t);
 
-    Situation buildStatement(std::unique_ptr<Statement>&r,size_t l,const Tokens&t);
+	class Statement{
+		protected:
+		Tokens tokens;
+		public:
+		StatementType type;
+		size_t scope_level;
+		
+		Statement*e;
+		
+		bool linked;
+		
+		bool have_else;
+		
+		Statement();
+		virtual Situation execute(Expression&ret,ExecuteResult&result,bool included=false)=0;
+		virtual Situation build()=0;
+		friend std::ostream&operator<<(std::ostream&os,const Statement&a);
 
-    class Expr:public Statement{
-        private:
-        Expression e;
-        public:
-        Expr();
-        Expr(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+		virtual ~Statement()=default;
+	};
 
-    class Let:public Statement{
-        public:
-        std::string name;
-        Expression val;
-        Type val_ty;
-        Let();
-        Let(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	Situation buildStatement(std::unique_ptr<Statement>&r,size_t l,const Tokens&t);
 
-    class Print:public Statement{
-        private:
-        Expression e;
-        public:
-        Print();
-        Print(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	class Expr:public Statement{
+		private:
+		Expression e;
+		public:
+		Expr();
+		Expr(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-    class Scan:public Statement{
-        public:
-        Scan();
-        Scan(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	class Let:public Statement{
+		public:
+		std::string name;
+		Expression val;
+		Type val_ty;
+		Let();
+		Let(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-    class Block:public Statement{
-        private:
-        Situation linkElse();
-        public:
-        std::vector<std::unique_ptr<Statement>>subStates;
+	class Print:public Statement{
+		private:
+		Expression e;
+		public:
+		Print();
+		Print(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-        Block();
-        Block(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	class Scan:public Statement{
+		public:
+		Scan();
+		Scan(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-    class Else;
+	class Block:public Statement{
+		private:
+		Situation linkElse();
+		public:
+		std::vector<std::unique_ptr<Statement>>subStates;
 
-    class If:public Statement{
-        public:
-        Expression j;
-        std::unique_ptr<Statement>t;
+		Block();
+		Block(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-        If();
-        If(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	class Else;
 
-    class Else:public Statement{
-        public:
-        std::unique_ptr<Statement>f;
-        
-        Else();
-        Else(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	class If:public Statement{
+		public:
+		Expression j;
+		std::unique_ptr<Statement>t;
 
-    class While:public Statement{
-        public:
-        std::unique_ptr<Statement>d;
-        Expression j;
-        While();
-        While(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+		If();
+		If(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-    class Break:public Statement{
-        public:
-        Break();
-        Break(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	class Else:public Statement{
+		public:
+		std::unique_ptr<Statement>f;
+		
+		Else();
+		Else(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-    class Continue:public Statement{
-        public:
-        Continue();
-        Continue(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	class While:public Statement{
+		public:
+		std::unique_ptr<Statement>d;
+		Expression j;
+		While();
+		While(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-    class Execute:public Statement{
-        public:
-        std::string code;
-        Execute();
-        Execute(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	class Break:public Statement{
+		public:
+		Break();
+		Break(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-    bool isOwner(const Token&a,size_t l);
+	class Continue:public Statement{
+		public:
+		Continue();
+		Continue(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-    class Move:public Statement{
-        public:
-        Expression from;
-        Expression to;
-        Move();
-        Move(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	class Execute:public Statement{
+		public:
+		std::string code;
+		Execute();
+		Execute(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-    class Borrow:public Statement{
-        public:
-        std::string name;
-        Expression from;
-        Borrow();
-        Borrow(size_t l,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	bool isOwner(const Token&a,size_t l);
 
-    class Include:public Statement{
-        public:
-        Expression pe;
-        Include();
-        Include(size_t,const Tokens&t);
-        Situation execute(ExecuteResult&result,bool included=false);
-        static bool isLegal(const Tokens&t);
-        Situation build();
-    };
+	class Move:public Statement{
+		public:
+		Expression from;
+		Expression to;
+		Move();
+		Move(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
 
-    // class Fn:public Statement{
-    //     public:
-    //     Fn();
-    //     Fn(int l,const Tokens&t);
-    //     Situation execute(ExecuteResult&result);
-    //     static bool isLegal(const Tokens&t);
-    //     Situation build();
-    // };
+	class Borrow:public Statement{
+		public:
+		std::string name;
+		Expression from;
+		Borrow();
+		Borrow(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
+
+	class Include:public Statement{
+		public:
+		Expression pe;
+		Include();
+		Include(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
+
+	class IFn:public Statement{
+		public:
+		std::string name;
+		std::vector<std::string>arguments;
+		std::unique_ptr<Statement>body;
+		IFn();
+		IFn(size_t l,const Tokens&t);
+		IFn(const IFn&a);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
+
+	class Return:public Statement{
+		public:
+		Expression ret_val;
+		Return();
+		Return(size_t l,const Tokens&t);
+		Situation execute(Expression&ret,ExecuteResult&result,bool included=false);
+		static bool isLegal(const Tokens&t);
+		Situation build();
+	};
+
+	// class Fn:public Statement{
+	//	 public:
+	//	 Fn();
+	//	 Fn(int l,const Tokens&t);
+	//	 Situation execute(ExecuteResult&result);
+	//	 static bool isLegal(const Tokens&t);
+	//	 Situation build();
+	// };
 }
 
 #endif

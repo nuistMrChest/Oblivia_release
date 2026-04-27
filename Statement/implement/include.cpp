@@ -37,7 +37,7 @@ namespace Oblivia{
         return Situation::Success;
     }
 
-    Situation Include::execute(ExecuteResult&result,bool included){
+    Situation Include::execute(Expression&ret,ExecuteResult&result,bool included){
         Situation se=pe.calculate();
         if(se!=Situation::Success)return se;
         if(getType(pe.v,scope_level)!=Type::String)return Situation::NotString;
@@ -57,6 +57,6 @@ namespace Oblivia{
         std::unique_ptr<Statement>stat;
         Situation sb=buildStatement(stat,scope_level-1,t);
         if(sb!=Situation::Success)return sb;
-        return stat->execute(result,true);    
+        return stat->execute(ret,result,true);    
     }
 }

@@ -25,7 +25,7 @@ namespace Oblivia{
         return isExpression(tmp);
     }
 
-    Situation Expr::execute(ExecuteResult&result,bool included){
+    Situation Expr::execute(Expression&ret,ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         return e.calculate();
     }

@@ -41,15 +41,15 @@ namespace Oblivia{
         return isStatement(subState);
     }
 
-    Situation If::execute(ExecuteResult&result,bool included){
+    Situation If::execute(Expression&ret,ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         Situation es=j.calculate();
         if(es!=Situation::Success)return es;
         bool jb;
         Situation bs=j.getBool(jb);
         if(bs!=Situation::Success)return bs;
-        if(jb)t->execute(result);
-        else if(have_else)e->execute(result);
+        if(jb)t->execute(ret,result);
+        else if(have_else)e->execute(ret,result);
         return Situation::Success;
     }
 

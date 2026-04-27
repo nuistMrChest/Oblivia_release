@@ -4,44 +4,44 @@
 #include<iostream>
 
 namespace Oblivia{
-    Print::Print(){
-        type=StatementType::Print;
-        scope_level=0;
-        tokens=Tokens();
-        e=Expression();
-    }
+	Print::Print(){
+		type=StatementType::Print;
+		scope_level=0;
+		tokens=Tokens();
+		e=Expression();
+	}
 
-    Print::Print(size_t l,const Tokens&t){
-        type=StatementType::Print;
-        scope_level=l;
-        tokens=t;
-        e=Expression();
-        this->build();
-    }
+	Print::Print(size_t l,const Tokens&t){
+		type=StatementType::Print;
+		scope_level=l;
+		tokens=t;
+		e=Expression();
+		this->build();
+	}
 
-    bool Print::isLegal(const Tokens&tokens){
-        if(tokens.size()<3)return false;
-        if(tokens[tokens.size()-1].type!=TokenType::SemiColon)return false;
-        if(tokens[0].str!="print")return false;
-        Tokens tmp=tokens;
-        tmp.erase(tmp.begin());
-        tmp.pop_back();
-        return isExpression(tmp);
-    }
+	bool Print::isLegal(const Tokens&tokens){
+		if(tokens.size()<3)return false;
+		if(tokens[tokens.size()-1].type!=TokenType::SemiColon)return false;
+		if(tokens[0].str!="print")return false;
+		Tokens tmp=tokens;
+		tmp.erase(tmp.begin());
+		tmp.pop_back();
+		return isExpression(tmp);
+	}
 
-    Situation Print::execute(ExecuteResult&result,bool included){
-        result=ExecuteResult::Other;
-        Situation si=e.calculate();
-        if(si!=Situation::Success)return si;
-        std::cout<<e;
-        return Situation::Success;
-    }
+	Situation Print::execute(Expression&ret,ExecuteResult&result,bool included){
+		result=ExecuteResult::Other;
+		Situation si=e.calculate();
+		if(si!=Situation::Success)return si;
+		std::cout<<e;
+		return Situation::Success;
+	}
 
-    Situation Print::build(){
-        Tokens tmp=tokens;
-        tmp.pop_back();
-        tmp.erase(tmp.begin());
-        e=Expression(tmp,scope_level); 
-        return Situation::Success;
-    }
+	Situation Print::build(){
+		Tokens tmp=tokens;
+		tmp.pop_back();
+		tmp.erase(tmp.begin());
+		e=Expression(tmp,scope_level); 
+		return Situation::Success;
+	}
 }

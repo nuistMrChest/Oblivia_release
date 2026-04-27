@@ -42,6 +42,7 @@ namespace Oblivia{
             std::cout<<sb<<std::endl;
         }
         ExecuteResult er;
-        stat->execute(er);
+		Expression ret;
+        stat->execute(ret,er);
     }
 }

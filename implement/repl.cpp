@@ -99,7 +99,8 @@ namespace Oblivia{
                 std::cout<<sb<<std::endl;
             }
             ExecuteResult er;
-            Situation se=stat->execute(er);
+			Expression ret;
+            Situation se=stat->execute(ret,er);
             std::cout<<se<<std::endl;
         }
     }

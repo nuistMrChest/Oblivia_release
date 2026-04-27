@@ -4,66 +4,66 @@
 #include<iostream>
 
 namespace Oblivia{
-    While::While(){
-        type=StatementType::While;
-        scope_level=0;
-        tokens=Tokens();
-        d=nullptr;
-        j=Expression();
-    }
+	While::While(){
+		type=StatementType::While;
+		scope_level=0;
+		tokens=Tokens();
+		d=nullptr;
+		j=Expression();
+	}
 
-    While::While(size_t l,const Tokens&t){
-        type=StatementType::While;
-        scope_level=l;
-        tokens=t;
-        d=nullptr;
-        j=Expression();
-        this->build();
-    }
+	While::While(size_t l,const Tokens&t){
+		type=StatementType::While;
+		scope_level=l;
+		tokens=t;
+		d=nullptr;
+		j=Expression();
+		this->build();
+	}
 
-    bool While::isLegal(const Tokens&t){
-        if(t.size()<4)return false;
-        if(t[0].str!="while")return false;
-        int i=1;
-        Tokens tmp;
-        while(i<t.size()&&t[i].type!=TokenType::Colon){
-            tmp.push_back(t[i]);
-            i++;
-        }
-        if(i==t.size())return false;
-        if(t[i].type!=TokenType::Colon)return false;
-        if(!isExpression(tmp))return false;
-        Tokens sub=t;
-        sub.erase(sub.begin(),sub.begin()+i+1);
-        return isStatement(sub);
-    }
+	bool While::isLegal(const Tokens&t){
+		if(t.size()<4)return false;
+		if(t[0].str!="while")return false;
+		int i=1;
+		Tokens tmp;
+		while(i<t.size()&&t[i].type!=TokenType::Colon){
+			tmp.push_back(t[i]);
+			i++;
+		}
+		if(i==t.size())return false;
+		if(t[i].type!=TokenType::Colon)return false;
+		if(!isExpression(tmp))return false;
+		Tokens sub=t;
+		sub.erase(sub.begin(),sub.begin()+i+1);
+		return isStatement(sub);
+	}
 
-    Situation While::execute(ExecuteResult&result,bool included){
-        ExecuteResult er;
-        Situation es=j.calculate();
-        if(es!=Situation::Success)return es;
-        bool jb;
-        j.getBool(jb);
-        while(jb){
-            d->execute(er);
-            if(er==ExecuteResult::EndLoop)break;
-            es=j.calculate();
-            if(es!=Situation::Success)return es;
-            j.getBool(jb);
-        }
-        return Situation::Success;
-    }
+	Situation While::execute(Expression&ret,ExecuteResult&result,bool included){
+		ExecuteResult er;
+		Situation es=j.calculate();
+		if(es!=Situation::Success)return es;
+		bool jb;
+		j.getBool(jb);
+		while(jb){
+			d->execute(ret,er);
+			if(er==ExecuteResult::EndLoop||er==ExecuteResult::Return)break;
+			es=j.calculate();
+			if(es!=Situation::Success)return es;
+			j.getBool(jb);
+		}
+		return Situation::Success;
+	}
 
-    Situation While::build(){
-        int i=1;
-        Tokens jt;
-        while(i<tokens.size()&&tokens[i].type!=TokenType::Colon){
-            jt.push_back(tokens[i]);
-            i++;
-        }
-        j=Expression(jt,scope_level);
-        Tokens tmp=tokens;
-        tmp.erase(tmp.begin(),tmp.begin()+i+1);
-        return buildStatement(d,scope_level+1,tmp);
-    }
+	Situation While::build(){
+		int i=1;
+		Tokens jt;
+		while(i<tokens.size()&&tokens[i].type!=TokenType::Colon){
+			jt.push_back(tokens[i]);
+			i++;
+		}
+		j=Expression(jt,scope_level);
+		Tokens tmp=tokens;
+		tmp.erase(tmp.begin(),tmp.begin()+i+1);
+		return buildStatement(d,scope_level+1,tmp);
+	}
 }

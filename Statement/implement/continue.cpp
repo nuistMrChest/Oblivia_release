@@ -22,7 +22,7 @@ namespace Oblivia{
         return true;
     }
 
-    Situation Continue::execute(ExecuteResult&result,bool included){
+    Situation Continue::execute(Expression&ret,ExecuteResult&result,bool included){
         result=ExecuteResult::ContinueLoop;
         return Situation::Success;
     }

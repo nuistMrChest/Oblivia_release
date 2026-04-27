@@ -41,7 +41,7 @@ namespace Oblivia{
         return true;
     }
 
-    Situation Let::execute(ExecuteResult&result,bool included){
+    Situation Let::execute(Expression&ret,ExecuteResult&result,bool included){
         result=ExecuteResult::Other;
         for(auto i=Variable::variables.begin();i!=Variable::variables.end();i++){
             if(i->first.level==scope_level&&i->first.name==name)return Situation::UsedIdentifier;
