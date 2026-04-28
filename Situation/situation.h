@@ -6,50 +6,50 @@
 #include<iostream>
 
 namespace Oblivia{
-    enum class Situation{
-        Test,
+	enum class Situation{
+		Test,
 
-        Success,
-        
-        BadToken,
-        FailedCalaulation,
-        BadStatement,
-        BuildFailed,
-        FailedReverse,
-        BadUnaryOperator,
-        NotCalcutalable,
-        VariableNotFound,
-        NotValue,
-        BadBinaryOperator,
-        NotAssignable,
-        NotAssigner,
-        NotArray,
-        BadIndexing,
-        NotObject,
-        BadAttribute,
-        BadString,
-        BadLiteral,
-        BadObjectLiteral,
-        BadArrayLiteral,
-        NotBoolean,
-        UnlinkedElse,
+		Success,
+		
+		BadToken,
+		FailedCalaulation,
+		BadStatement,
+		BuildFailed,
+		FailedReverse,
+		BadUnaryOperator,
+		NotCalcutalable,
+		VariableNotFound,
+		NotValue,
+		BadBinaryOperator,
+		NotAssignable,
+		NotAssigner,
+		NotArray,
+		BadIndexing,
+		NotObject,
+		BadAttribute,
+		BadString,
+		BadLiteral,
+		BadObjectLiteral,
+		BadArrayLiteral,
+		NotBoolean,
+		UnlinkedElse,
 
-        NotString,
-        IlegalStatement,
+		NotString,
+		IlegalStatement,
 
-        BadEscape,
+		BadEscape,
 
-        NotOwner,
-        NotMovable,
+		NotOwner,
+		NotMovable,
 
-        UsedIdentifier,
+		UsedIdentifier,
 
-        AttributeExist,
-        BadAttributeName,
-        BadPath
-    };
+		AttributeExist,
+		BadAttributeName,
+		BadPath
+	};
 
-    std::ostream&operator<<(std::ostream&os,const Situation&a);
+	std::ostream&operator<<(std::ostream&os,const Situation&a);
 }
 
 #endif

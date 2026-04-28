@@ -2,6 +2,8 @@
 // Licensed under the MIT License
 
 #include"../statement.h"
+#include"../../TypeSystem/function.h"
+#include <memory>
 
 namespace Oblivia{
 	IFn::IFn(){
@@ -17,10 +19,18 @@ namespace Oblivia{
 		build();
 	}
 
+	IFn::IFn(const IFn&a){
+		this->type=a.type;
+		this->scope_level=a.scope_level;
+		this->tokens=a.tokens;
+		this->arguments=a.arguments;
+		buildStatement(this->body,scope_level+1,a.body->tokens);
+	}
+
 	Situation IFn::build(){
-		size_t paren_quote=0;
+		size_t paren_quote=1;
 		Token buf;
-		size_t i=2;
+		size_t i=3;
 		while(i<tokens.size()){
 			if(tokens[i].str=="(")paren_quote++;
 			if(tokens[i].str==")")paren_quote--;
@@ -29,7 +39,6 @@ namespace Oblivia{
 			else buf=tokens[i];
 			i++;
 		}
-		i++;
 		Tokens b;
 		while(i<tokens.size()){
 			b.push_back(tokens[i]);
@@ -39,8 +48,12 @@ namespace Oblivia{
 	}
 
 	bool IFn::isLegal(const Tokens&t){
-		size_t paren_quote=0;
-		size_t i=2;
+		if(t.size()<5)return false;
+		if(t[0].str!="ifn")return false;
+		if(t[1].type!=TokenType::Identifier)return false;
+		if(t[2].str!="(")return false;
+		size_t paren_quote=1;
+		size_t i=3;
 		TokenType cur=TokenType::Null;
 		TokenType last=TokenType::Null;
 		while(i<t.size()){
@@ -61,9 +74,22 @@ namespace Oblivia{
 		}
 		i++;
 		Tokens b;
+		while(i<t.size()){
+			b.push_back(t[i]);
+			i++;
+		}
 		return isStatement(b);
 	}
 
 	Situation IFn::execute(Expression&ret,ExecuteResult&result,bool included){
+		result=ExecuteResult::Other;
+		for(auto i=Variable::variables.begin();i!=Variable::variables.end();i++){
+			if(i->first.level==scope_level&&i->first.name==name)
+				return Situation::UsedIdentifier;
+		}
+		Variable*var=new Variable(scope_level,name);
+		var->type=Type::Function;
+		var->as.v=std::make_unique<Function>(arguments,std::make_unique<IFn>(*this));
+		return Situation::Success;
 	}
 }

@@ -48,9 +48,8 @@ namespace Oblivia{
 	bool isStatement(const Tokens&t);
 
 	class Statement{
-		protected:
-		Tokens tokens;
 		public:
+		Tokens tokens;
 		StatementType type;
 		size_t scope_level;
 		

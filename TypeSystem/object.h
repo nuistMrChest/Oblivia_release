@@ -3,7 +3,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "function.h"
+#include"function.h"
 #include"value.h"
 #include"number.h"
 #include"variable.h"

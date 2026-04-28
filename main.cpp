@@ -13,13 +13,13 @@ using namespace std;
 using namespace Oblivia;
 
 int main(int argc,char**argv){
-    if(argc!=1&&argc!=2){
-        std::cout<<"Too many arguments"<<std::endl;
-        return 0;
-    }
-    if(argc==1)REPL();
-    else if(argc==2){
-        std::string path=argv[1];
-        interpreter(path);
-    }
+	if(argc!=1&&argc!=2){
+		std::cout<<"Too many arguments"<<std::endl;
+		return 0;
+	}
+	if(argc==1)REPL();
+	else if(argc==2){
+		std::string path=argv[1];
+		interpreter(path);
+	}
 }

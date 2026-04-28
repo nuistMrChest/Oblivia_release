@@ -9,6 +9,8 @@
 #include<iostream>
 #include"../string.h"
 #include"../reference.h"
+#include"../../Statement/statement.h"
+#include"../function.h"
 
 namespace Oblivia{
 	Type Attribute::getType()const{

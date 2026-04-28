@@ -15,6 +15,8 @@ namespace Oblivia{
 		Object,
 		String,
 		Reference,
+
+		FunctionCall
 	};
 
 	std::ostream&operator<<(std::ostream&os,const Type&a);

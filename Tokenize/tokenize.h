@@ -12,96 +12,98 @@
 #include<memory>
 
 namespace Oblivia{
-    typedef std::vector<std::string>Words;
+	typedef std::vector<std::string>Words;
 
-    inline const Words keywords={
-        "let",
-        "print",
-        "scan",
-        "if",
-        "else",
-        "while",
-        "break",
-        "continue",
-        "borrow",
-        "move",
-        "include"
-    };
+	inline const Words keywords={
+		"let",
+		"print",
+		"scan",
+		"if",
+		"else",
+		"while",
+		"break",
+		"continue",
+		"borrow",
+		"move",
+		"include",
+		"return",
+		"ifn"
+	};
 
-    enum class TokenType{
-        Null,
+	enum class TokenType{
+		Null,
 
-        Value,
-        
-        Number,
-        Identifier,
-        Operator,
-        Paren,
-        Bracket,
-        Brace,
-        Arrow,
-        Colon,
-        Comma,
-        SemiColon,
+		Value,
+		
+		Number,
+		Identifier,
+		Operator,
+		Paren,
+		Bracket,
+		Brace,
+		Arrow,
+		Colon,
+		Comma,
+		SemiColon,
 
-        BadToken,
-        
-        Variable,
-        ArrayElement,
-        ObjectAttribute,
-        FunctionCall,
+		BadToken,
+		
+		Variable,
+		ArrayElement,
+		ObjectAttribute,
+		FunctionCall,
 
-        DoubleQuote,
-        BackSlash,
-        String,
-        Space,
+		DoubleQuote,
+		BackSlash,
+		String,
+		Space,
 
-        Caret,
-        At,
+		Caret,
+		At,
 
-        Object,
-        Array,
+		Object,
+		Array,
 
-        Reference
-    };
+		Reference
+	};
 
-    std::ostream&operator<<(std::ostream&os,const TokenType&a);
+	std::ostream&operator<<(std::ostream&os,const TokenType&a);
 
-    Situation tokenize(Words&r,const std::string&a);
+	Situation tokenize(Words&r,const std::string&a);
 
-    struct Token{
-        std::string str;
-        TokenType type;
-        struct TokenValue{
-            std::variant<Number,Variable*,ArrayElement*,Attribute*,Operator,String,Object,Array,Reference>v;
-            Number&num();
-            Variable&var();
-            ArrayElement&ele();
-            Attribute&att();
-            Operator&ope();
-            String&str();
-            Object&obj();
-            Array&arr();
-            Reference&ref();
+	struct Token{
+		std::string str;
+		TokenType type;
+		struct TokenValue{
+			std::variant<Number,Variable*,ArrayElement*,Attribute*,Operator,String,Object,Array,Reference>v;
+			Number&num();
+			Variable&var();
+			ArrayElement&ele();
+			Attribute&att();
+			Operator&ope();
+			String&str();
+			Object&obj();
+			Array&arr();
+			Reference&ref();
 
-            const Number&num()const;
-            const Variable&var()const;
-            const ArrayElement&ele()const;
-            const Attribute&att()const;
-            const Operator&ope()const;
-            const String&str()const;
-            const Object&obj()const;
-            const Array&arr()const;
-            const Reference&ref()const;
-        }as;
-        Token();
-    };
+			const Number&num()const;
+			const Variable&var()const;
+			const ArrayElement&ele()const;
+			const Attribute&att()const;
+			const Operator&ope()const;
+			const String&str()const;
+			const Object&obj()const;
+			const Array&arr()const;
+			const Reference&ref()const;
+		}as;
+		Token();
+	};
 
-    typedef std::vector<Token> Tokens;
+	typedef std::vector<Token> Tokens;
 
-    Situation processToken(Tokens&r,const Words&a);
+	Situation processToken(Tokens&r,const Words&a);
 
-    Situation processLiteral(Tokens&r,const Tokens&a);
+	Situation processLiteral(Tokens&r,const Tokens&a);
 }
 
 #endif
