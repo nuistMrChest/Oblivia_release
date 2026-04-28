@@ -75,7 +75,19 @@ namespace Oblivia{
 		std::string str;
 		TokenType type;
 		struct TokenValue{
-			std::variant<Number,Variable*,ArrayElement*,Attribute*,Operator,String,Object,Array,Reference>v;
+			std::variant<
+				Number,
+				Variable*,
+				ArrayElement*,
+				Attribute*,
+				Operator,
+				String,
+				Object,
+				Array,
+				Reference,
+				FunctionCall
+			>v;
+
 			Number&num();
 			Variable&var();
 			ArrayElement&ele();
@@ -85,6 +97,7 @@ namespace Oblivia{
 			Object&obj();
 			Array&arr();
 			Reference&ref();
+			FunctionCall&fc();
 
 			const Number&num()const;
 			const Variable&var()const;
@@ -95,6 +108,7 @@ namespace Oblivia{
 			const Object&obj()const;
 			const Array&arr()const;
 			const Reference&ref()const;
+			const FunctionCall&fc()const;
 		}as;
 		Token();
 	};
@@ -102,6 +116,8 @@ namespace Oblivia{
 	typedef std::vector<Token> Tokens;
 
 	Situation processToken(Tokens&r,const Words&a);
+
+	Situation processFunctionCall(Token&r,const Tokens&a);
 
 	Situation processLiteral(Tokens&r,const Tokens&a);
 }

@@ -7,3 +7,4 @@ build_macos/
 compile_commands.json
 
 .vscode/
+.cache/

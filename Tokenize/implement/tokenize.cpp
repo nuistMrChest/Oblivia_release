@@ -7,6 +7,7 @@
 #include<algorithm>
 #include<stack>
 #include<utility>
+#include"../../Expression/expression.h"
 
 namespace Oblivia{
 	std::ostream&operator<<(std::ostream&os,const TokenType&a){
@@ -306,6 +307,10 @@ namespace Oblivia{
 		return std::get<Reference>(v);
 	}
 
+	FunctionCall&Token::TokenValue::fc(){
+		return std::get<FunctionCall>(v);
+	}
+
 	const Number&Token::TokenValue::num()const{
 		return std::get<Number>(v);
 	}
@@ -341,7 +346,11 @@ namespace Oblivia{
 	const Reference&Token::TokenValue::ref()const{
 		return std::get<Reference>(v);
 	}
- 
+
+	const FunctionCall&Token::TokenValue::fc()const{
+		return std::get<FunctionCall>(v);
+	}
+
 	Situation createObject(Token&res,const Tokens&a){
 		return Situation::Test;
 	}
@@ -351,7 +360,16 @@ namespace Oblivia{
 	}
 
 	Situation processLiteral(Tokens&r,const Tokens&a){
-		
+		return Situation::Success;
+	}
+
+//here!!!!!!!!!!!!!!!!
+	Situation processFunctionCall(Token&r,const Tokens&a){
+		if(
+			a.size()<3&&
+			a[0].type!=TokenType::Identifier&&
+			a[1].str!="("&&a[a.size()-1].str!=")"
+		)return Situation::BadFunctionCall;
 		return Situation::Success;
 	}
 }

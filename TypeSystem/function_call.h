@@ -9,12 +9,13 @@
 
 namespace Oblivia{
 	class Expression;
+	enum class Situation;
 
 	class FunctionCall:public Value{
 		public:
 		std::string name;
 		std::vector<Expression>arguments;
-		Expression getReturn();
+		Situation call(Expression&res);
 
 		FunctionCall();
 		FunctionCall(const std::string&n,const std::vector<Expression>&as);

@@ -31,6 +31,7 @@ namespace Oblivia{
 		size_t paren_quote=1;
 		Token buf;
 		size_t i=3;
+		name=tokens[1].str;
 		while(i<tokens.size()){
 			if(tokens[i].str=="(")paren_quote++;
 			if(tokens[i].str==")")paren_quote--;

@@ -3,6 +3,7 @@
 
 #include"../function_call.h"
 #include"../../Expression/expression.h"
+#include"../../Situation/situation.h"
 
 namespace Oblivia{
 	FunctionCall::FunctionCall(){
@@ -18,5 +19,9 @@ namespace Oblivia{
 
 	void FunctionCall::print(std::ostream&os)const{
 		os<<name;
+	}
+
+	Situation FunctionCall::call(Expression&res){
+		return Situation::Test;
 	}
 }

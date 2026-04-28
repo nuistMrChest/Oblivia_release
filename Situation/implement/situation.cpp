@@ -39,6 +39,9 @@ namespace Oblivia{
 			case Situation::AttributeExist:os<<"AttributeExist";break;
 			case Situation::BadAttributeName:os<<"BadAttributeName";break;
 			case Situation::BadPath:os<<"BadPath";break;
+			case Situation::UnpairedParen:os<<"UnpairedParen";break;
+			case Situation::BadExpression:os<<"BadExpression";break;
+			case Situation::BadFunctionCall:os<<"BadFunctionCall";break;
 		}
 		return os;
 	}
