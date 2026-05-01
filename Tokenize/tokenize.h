@@ -64,7 +64,9 @@ namespace Oblivia{
 		Object,
 		Array,
 
-		Reference
+		Reference,
+
+		LineBreak
 	};
 
 	std::ostream&operator<<(std::ostream&os,const TokenType&a);
@@ -73,6 +75,7 @@ namespace Oblivia{
 
 	struct Token{
 		std::string str;
+		size_t line;
 		TokenType type;
 		struct TokenValue{
 			std::variant<
@@ -111,6 +114,7 @@ namespace Oblivia{
 			const FunctionCall&fc()const;
 		}as;
 		Token();
+		Token(size_t l);
 	};
 
 	typedef std::vector<Token> Tokens;

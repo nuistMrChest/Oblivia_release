@@ -38,6 +38,7 @@ namespace Oblivia{
 			case TokenType::Object:os<<"Object";break;
 			case TokenType::Array:os<<"Array";break;
 			case TokenType::Reference:os<<"Reference";break;
+			case TokenType::LineBreak:os<<"LineBreak";break;
 		}
 		return os;
 	}
@@ -62,13 +63,14 @@ namespace Oblivia{
 			else if(isSpaceChar(a[i]))type=TokenType::Space;
 			else if(isCaretChar(a[i]))type=TokenType::Caret;
 			else if(isAtChar(a[i]))type=TokenType::At;
-			else if(a[i]=='\t'||a[i]=='\n'||a[i]=='\r'){
+			else if(a[i]=='\t'||a[i]=='\r'){
 				if(!tmp.empty()){
 					res.push_back(tmp);
 					tmp.clear();
 				}
 				continue;
 			}
+			else if(a[i]=='\n')type=TokenType::LineBreak;
 			else type=TokenType::Null;
 			if(type!=last_type&&!tmp.empty()){
 				res.push_back(tmp);
@@ -83,48 +85,55 @@ namespace Oblivia{
 
 		Words final_res;
 		while(!res.empty()){
-			if(isBracketChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))while(!res[0].empty()){
-				std::string tmp_str;
-				tmp_str+=res[0][0];
-				final_res.push_back(tmp_str);
-				res[0].erase(0,1);
-			}
-			else if(isParenChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))while(!res[0].empty()){
-				std::string tmp_str;
-				tmp_str+=res[0][0];
-				final_res.push_back(tmp_str);
-				res[0].erase(0,1);
-			}
-			else if(isSpaceChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))while(!res[0].empty()){
-				std::string tmp_str;
-				tmp_str+=res[0][0];
-				final_res.push_back(tmp_str);
-				res[0].erase(0,1);
-			}
-			else if(isDoubleQuoteChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))while(!res[0].empty()){
-				std::string tmp_str;
-				tmp_str+=res[0][0];
-				final_res.push_back(tmp_str);
-				res[0].erase(0,1);
-			}
-			else if(isBackSlashChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))while(!res[0].empty()){
-				std::string tmp_str;
-				tmp_str+=res[0][0];
-				final_res.push_back(tmp_str);
-				res[0].erase(0,1);
-			}
-			else if(isSemiColonChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))while(!res[0].empty()){
-				std::string tmp_str;
-				tmp_str+=res[0][0];
-				final_res.push_back(tmp_str);
-				res[0].erase(0,1);
-			}
-			else if(isBraceChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))while(!res[0].empty()){
-				std::string tmp_str;
-				tmp_str+=res[0][0];
-				final_res.push_back(tmp_str);
-				res[0].erase(0,1);
-			}
+			if(isBracketChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))
+				while(!res[0].empty()){
+					std::string tmp_str;
+					tmp_str+=res[0][0];
+					final_res.push_back(tmp_str);
+					res[0].erase(0,1);
+				}
+			else if(isParenChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))
+				while(!res[0].empty()){
+					std::string tmp_str;
+					tmp_str+=res[0][0];
+					final_res.push_back(tmp_str);
+					res[0].erase(0,1);
+				}
+			else if(isSpaceChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))
+				while(!res[0].empty()){
+					std::string tmp_str;
+					tmp_str+=res[0][0];
+					final_res.push_back(tmp_str);
+					res[0].erase(0,1);
+				}
+			else if(isDoubleQuoteChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))
+				while(!res[0].empty()){
+					std::string tmp_str;
+					tmp_str+=res[0][0];
+					final_res.push_back(tmp_str);
+					res[0].erase(0,1);
+				}
+			else if(isBackSlashChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))
+				while(!res[0].empty()){
+					std::string tmp_str;
+					tmp_str+=res[0][0];
+					final_res.push_back(tmp_str);
+					res[0].erase(0,1);
+				}
+			else if(isSemiColonChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))
+				while(!res[0].empty()){
+					std::string tmp_str;
+					tmp_str+=res[0][0];
+					final_res.push_back(tmp_str);
+					res[0].erase(0,1);
+				}
+			else if(isBraceChar(res[0][0])||(res[0].length()>=2&&res[0][1]=='!'))
+				while(!res[0].empty()){
+					std::string tmp_str;
+					tmp_str+=res[0][0];
+					final_res.push_back(tmp_str);
+					res[0].erase(0,1);
+				}
 			else if(res[0].length()>=3&&res[0][1]!='!'&&res[0][2]=='!'){
 				std::string tmp_str;
 				tmp_str+=res[0][0];
@@ -158,12 +167,17 @@ namespace Oblivia{
 	Situation processToken(Tokens&r,const Words&a){
 		Tokens tmpT;
 		tmpT.clear();
+		size_t line=0;
 		for(size_t i=0;i<a.size();i++){
-			Token tmp;
+			Token tmp(line);
 			tmp.str=a[i];
 			if(isNumber(a[i])){
 				tmp.type=TokenType::Number;
 				tmp.as.v=Number(a[i]);
+			}
+			else if(a[i][0]=='\n'){
+				tmp.type=TokenType::LineBreak;
+				line++;
 			}
 			else if(isSpace(a[i]))tmp.type=TokenType::Space;
 			else if(isIdentifier(a[i]))tmp.type=TokenType::Identifier;
@@ -191,7 +205,10 @@ namespace Oblivia{
 				it->str=")";
 				it->type=TokenType::Paren;
 			}
-			if(!(it==tmpT.begin()||((it-1)->type==TokenType::At||(it-1)->type==TokenType::Caret)))if(it->str=="["){
+			if(!(
+				it==tmpT.begin()||
+				((it-1)->type==TokenType::At||(it-1)->type==TokenType::Caret
+			)))if(it->str=="["){
 				in_ind=true;
 				it->str="(";
 				it->type=TokenType::Paren;
@@ -254,19 +271,112 @@ namespace Oblivia{
 			}
 			++i;
 		}
+
+		for(size_t i=0;i<tmpT.size();i++){
+			if(tmpT[i].str.length()>=1){
+				for(size_t j=0;j<tmpT[i].str.size();j++){
+					if(j+1<tmpT[i].str.size()&&tmpT[i].str[j]=='/'){
+						if(tmpT[i].str[j+1]=='/'){
+							tmpT[i].str.erase(
+								tmpT[i].str.begin()+j,
+								tmpT[i].str.end()
+							);
+							if(i+1<tmpT.size())
+								while(
+									i+1<tmpT.size()&&
+									tmpT[i+1].type!=TokenType::LineBreak
+								)
+									tmpT.erase(tmpT.begin()+i+1);
+						}
+						else if(tmpT[i].str[j+1]=='*'){
+							size_t end=tmpT[i].str.size()-1;
+							bool ended=false;
+							for(size_t k=j+1;k<tmpT[i].str.size();k++)
+								if(
+									k+1<tmpT[i].str.size()&&
+									tmpT[i].str[k]=='*'&&
+									tmpT[i].str[k+1]=='/'
+								){
+									end=k+1;
+									ended=true;
+									break;
+								}
+							tmpT[i].str.erase(
+								tmpT[i].str.begin()+j,
+								tmpT[i].str.begin()+end+1
+							);
+							bool remain=false;
+							if(!ended){
+								bool truely_ended=false;
+								while(i+1<tmpT.size()){
+									for(size_t k=0;k<tmpT[i+1].str.size();k++)
+										if(
+											k+1<tmpT[i+1].str.size()&&
+											tmpT[i+1].str[k]=='*'&&
+											tmpT[i+1].str[k+1]=='/'
+										){
+											tmpT[i+1].str.erase(
+												tmpT[i+1].str.begin(),
+												tmpT[i+1].str.begin()+k+2
+											);
+											truely_ended=true;
+											if(tmpT[i+1].str.size()>0)remain=true;
+											break;
+										}
+									if(truely_ended)break;
+									else tmpT.erase(tmpT.begin()+i+1);
+								}
+							}
+							if(remain){
+								tmpT[i].str+=tmpT[i+1].str;
+								tmpT.erase(tmpT.begin()+i+1);
+							}
+						}
+					}
+					else if(tmpT[i].str[0]=='#'){
+						tmpT[i].str.erase(
+							tmpT[i].str.begin()+j,
+							tmpT[i].str.end()
+						);
+						if(i+1<tmpT.size())
+							while(
+								i+1<tmpT.size()&&
+								tmpT[i+1].type!=TokenType::LineBreak
+							)
+								tmpT.erase(tmpT.begin()+i+1);
+					}
+				}
+			}
+		}
+
+		for(size_t i=0;i<tmpT.size();i++)if(isOperator(tmpT[i].str))tmpT[i].type=TokenType::Operator;
+
 		tmpT.erase(
 			std::remove_if(
 				tmpT.begin(),
 				tmpT.end(),
-				[](const Token&a){return a.str==" ";}
+				[](const Token&a){
+					return a.str==""||a.str==" "||a.type==TokenType::LineBreak;
+				}
 			),tmpT.end()
 		);
+
+//		for(size_t i=0;i<tmpT.size();i++)
+//			std::cout<<tmpT[i].type<<":"<<tmpT[i].str<<"\n";
+
 		r=std::move(tmpT);
 		return Situation::Success;
 	}
 
 	Token::Token(){
 		str="";
+		line=0;
+		type=TokenType::Null;
+	}
+
+	Token::Token(size_t l){
+		str="";
+		line=l;
 		type=TokenType::Null;
 	}
 
