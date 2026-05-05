@@ -50,7 +50,8 @@ namespace Oblivia{
 		UnpairedParen,
 		BadExpression,
 
-		BadFunctionCall
+		BadFunctionCall,
+		BadArgument
 	};
 
 	std::ostream&operator<<(std::ostream&os,const Situation&a);

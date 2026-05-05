@@ -8,6 +8,7 @@
 #include<stack>
 #include<utility>
 #include"../../Expression/expression.h"
+#include"../../TypeSystem/function.h"
 
 namespace Oblivia{
 	std::ostream&operator<<(std::ostream&os,const TokenType&a){
@@ -330,6 +331,8 @@ namespace Oblivia{
 							if(remain){
 								tmpT[i].str+=tmpT[i+1].str;
 								tmpT.erase(tmpT.begin()+i+1);
+								tmpT[i].type=TokenType::Operator;
+								tmpT[i].as.v=toOperator(tmpT[i].str);
 							}
 						}
 					}
@@ -473,13 +476,34 @@ namespace Oblivia{
 		return Situation::Success;
 	}
 
-//here!!!!!!!!!!!!!!!!
 	Situation processFunctionCall(Token&r,const Tokens&a){
 		if(
 			a.size()<3&&
 			a[0].type!=TokenType::Identifier&&
-			a[1].str!="("&&a[a.size()-1].str!=")"
+			a[1].str!="("&&
+			a[a.size()-1].str!=")"
 		)return Situation::BadFunctionCall;
+		Tokens buf;
+		r.type=TokenType::FunctionCall;
+		r.as.fc()=FunctionCall();
+		r.as.fc().name=a[0].str;
+		for(size_t i=2;i<a.size()-1;i++){
+			if(a[i].type==TokenType::Comma){
+				if(!isExpression(buf))return Situation::BadArgument;
+				r.as.fc().arguments.push_back(Expression(buf,0));
+				buf.clear();
+			}
+			else{
+				buf.push_back(a[i]);
+				if(
+					i+1<a.size()-1&&
+					a[i].type==TokenType::Identifier&&
+					a[i+1].str=="("
+				){
+					Tokens call;
+				}
+			}
+		}
 		return Situation::Success;
 	}
 }

@@ -29,6 +29,35 @@ namespace Oblivia{
 		return Operator::NotOperator;
 	}
 
+	std::ostream&operator<<(std::ostream&os,Operator a){
+		switch(a){
+			case Operator::NotOperator:os<<"NotOperator";
+			case Operator::Addition:os<<"Addition";
+			case Operator::Subtraction:os<<"Subtraction";
+			case Operator::Multiplication:os<<"Multiplication";
+			case Operator::Division:os<<"Division";
+			case Operator::Modulo:os<<"Modulo";
+			case Operator::Assignment:os<<"Assignment";
+			case Operator::Equality:os<<"Equality";
+			case Operator::Inequality:os<<"Inequality";
+			case Operator::GreaterThan:os<<"GreaterThan";
+			case Operator::LessThan:os<<"LessThan";
+			case Operator::GreaterThanOrEqualTo:os<<"GreaterThanOrEqualTo";
+			case Operator::LessThanOrEqualTo:os<<"LessThanOrEqualTo";
+			case Operator::And:os<<"And";
+			case Operator::Or:os<<"Or";
+			case Operator::Not:os<<"Not";
+			case Operator::ElementIndexing:os<<"ElementIndexing";
+			case Operator::AttributeDereferencing:os<<"AttributeDereferencing";
+			case Operator::AdditionAssignment:os<<"AdditionAssignment";
+			case Operator::SubtractionAssignment:os<<"SubtractionAssignment";
+			case Operator::MultiplicationAssignment:os<<"MultiplicationAssignment";
+			case Operator::DivisionAssignment:os<<"DivisionAssignment";
+			case Operator::ModuloAssignment:os<<"ModuloAssignment";
+		}
+		return os;
+	}
+
 	int getArity(const Operator&a){
 		if(a==Operator::Not)return 1;
 		else if(a==Operator::NotOperator)return -1;

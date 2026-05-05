@@ -10,80 +10,80 @@
 #include<iostream>
 
 namespace Oblivia{
-    void Reference::print(std::ostream&os)const{
-        if(refed){
-            switch(*ref_type){
-                case Type::Number:os<<ref->Num();break;
-                case Type::Array:os<<ref->Arr();break;
-                case Type::Object:os<<ref->Obj();break;
-                case Type::String:os<<ref->Str();break;
-                default:os<<"";
-            }
-        }
-        else{
-            os<<"null reference";
-        }
-    }
+	void Reference::print(std::ostream&os)const{
+		if(refed){
+			switch(*ref_type){
+				case Type::Number:os<<ref->Num();break;
+				case Type::Array:os<<ref->Arr();break;
+				case Type::Object:os<<ref->Obj();break;
+				case Type::String:os<<ref->Str();break;
+				default:os<<"";
+			}
+		}
+		else{
+			os<<"null reference";
+		}
+	}
 
-    Reference::Reference(){
-        ref=nullptr;
-        ref_type=nullptr;
-        refed=false;
-        type=Type::Reference;
-        calculatable=false;
-    }
+	Reference::Reference(){
+		ref=nullptr;
+		ref_type=nullptr;
+		refed=false;
+		type=Type::Reference;
+		calculatable=false;
+	}
 
-    Reference::Reference(ValueType&v,Type*t){
-        ref=&v;
-        ref_type=t;
-        refed=true;
-        type=Type::Reference;
-        v.refed_by.push_back(this);
-        if(*t==Type::Number)calculatable=true;
-        else calculatable=false;
-    }
+	Reference::Reference(ValueType&v,Type*t){
+		ref=&v;
+		ref_type=t;
+		refed=true;
+		type=Type::Reference;
+		v.refed_by.push_back(this);
+		if(*t==Type::Number)calculatable=true;
+		else calculatable=false;
+	}
 
-    Reference::Reference(const Reference&a){
-        this->ref=a.ref;
-        this->type=a.type;
-        this->refed=a.refed;
-        this->ref_type=a.ref_type;
-        this->ref->refed_by.push_back(this);
-        this->calculatable=a.calculatable;
-    }
+	Reference::Reference(const Reference&a){
+		this->ref=a.ref;
+		this->type=a.type;
+		this->refed=a.refed;
+		this->ref_type=a.ref_type;
+		this->ref->refed_by.push_back(this);
+		this->calculatable=a.calculatable;
+	}
 
-    Reference&Reference::operator=(const Reference&a){
-        this->ref=a.ref;
-        this->type=a.type;
-        this->refed=a.refed;
-        this->ref_type=a.ref_type;
-        this->ref->refed_by.push_back(this);
-        return*this;
-    }
+	Reference&Reference::operator=(const Reference&a){
+		this->ref=a.ref;
+		this->type=a.type;
+		this->refed=a.refed;
+		this->ref_type=a.ref_type;
+		this->ref->refed_by.push_back(this);
+		return*this;
+	}
 
-    Number Reference::operator==(const Reference&a)const{
-        if(this->refed&&this->ref==a.ref)return Number(1);
-        return Number(0);
-    }
+	Number Reference::operator==(const Reference&a)const{
+		if(this->refed&&this->ref==a.ref)return Number(1);
+		return Number(0);
+	}
 
-    Number&Reference::getNumber(){
-        return ref->Num();
-    }
+	Number&Reference::getNumber(){
+		return ref->Num();
+	}
 
-    const Number&Reference::getConstNumber()const{
-        return ref->Num();
-    }
+	const Number&Reference::getConstNumber()const{
+		return ref->Num();
+	}
 
-    Reference::~Reference(){
-        if(ref!=nullptr){
-            ref->refed_by.erase(
-                std::remove(
-                    ref->refed_by.begin(),
-                    ref->refed_by.end(),
-                    this
-                ),
-                ref->refed_by.end()
-            );
-        }
-    }
+	Reference::~Reference(){
+		if(ref!=nullptr){
+			ref->refed_by.erase(
+				std::remove(
+					ref->refed_by.begin(),
+					ref->refed_by.end(),
+					this
+				),
+				ref->refed_by.end()
+			);
+		}
+	}
 }

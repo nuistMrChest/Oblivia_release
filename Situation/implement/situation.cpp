@@ -42,6 +42,7 @@ namespace Oblivia{
 			case Situation::UnpairedParen:os<<"UnpairedParen";break;
 			case Situation::BadExpression:os<<"BadExpression";break;
 			case Situation::BadFunctionCall:os<<"BadFunctionCall";break;
+			case Situation::BadArgument:os<<"BadArgument";break;
 		}
 		return os;
 	}

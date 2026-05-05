@@ -4,47 +4,50 @@
 #define OPERATOR_H
 
 #include<string>
+#include<iostream>
 
 namespace Oblivia{
-    enum class Operator{
-        NotOperator,
+	enum class Operator{
+		NotOperator,
 
-        Addition,
-        Subtraction,
-        Multiplication,
-        Division,
-        Modulo,
-        Assignment,
-        Equality,
-        Inequality,
-        GreaterThan,
-        LessThan,
-        GreaterThanOrEqualTo,
-        LessThanOrEqualTo,
-        And,
-        Or,
-        Not,
-        ElementIndexing,
-        AttributeDereferencing,
-        AdditionAssignment,
-        SubtractionAssignment,
-        MultiplicationAssignment,
-        DivisionAssignment,
-        ModuloAssignment
-    };
+		Addition,
+		Subtraction,
+		Multiplication,
+		Division,
+		Modulo,
+		Assignment,
+		Equality,
+		Inequality,
+		GreaterThan,
+		LessThan,
+		GreaterThanOrEqualTo,
+		LessThanOrEqualTo,
+		And,
+		Or,
+		Not,
+		ElementIndexing,
+		AttributeDereferencing,
+		AdditionAssignment,
+		SubtractionAssignment,
+		MultiplicationAssignment,
+		DivisionAssignment,
+		ModuloAssignment
+	};
 
-    Operator toOperator(const std::string&a);
+	std::ostream&operator<<(std::ostream&os,Operator a);
 
-    int getArity(const Operator&a);
+	Operator toOperator(const std::string&a);
 
-    int getPrecedence(const Operator&a);
+	int getArity(const Operator&a);
 
-    enum class Associativity{
-        Right,
-        Left
-    };
+	int getPrecedence(const Operator&a);
 
-    Associativity getAssociativity(const Operator&a);
+	enum class Associativity{
+		Right,
+		Left
+	};
+
+	Associativity getAssociativity(const Operator&a);
 }
 
 #endif
