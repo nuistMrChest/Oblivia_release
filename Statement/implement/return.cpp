@@ -46,5 +46,6 @@ namespace Oblivia{
 		tmp.pop_back();
 		tmp.erase(tmp.begin());
 		ret_val=Expression(tmp,scope_level);
+		return Situation::Success;
 	}
 }
